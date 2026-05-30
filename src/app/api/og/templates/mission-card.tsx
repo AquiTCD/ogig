@@ -54,7 +54,7 @@ const getTitleFontSize = (titleText: string) => {
 
 export function MissionCardTemplate({
   title,
-  subtitle,
+  description,
   date,
   ranking = 'false',
   condition = 'none',
@@ -94,30 +94,6 @@ export function MissionCardTemplate({
         }}
       />
 
-      {/* Notebook ruled horizontal lines (background - darkened to make them clearly visible) */}
-      <div
-        style={{
-          position: 'absolute',
-          top: 0,
-          bottom: 0,
-          left: 0,
-          right: 0,
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-          padding: '110px 0 90px 0',
-          opacity: 0.65,
-          pointerEvents: 'none',
-        }}
-      >
-        <div style={{ width: '100%', height: '1.5px', backgroundColor: '#DAD8CE' }} />
-        <div style={{ width: '100%', height: '1.5px', backgroundColor: '#DAD8CE' }} />
-        <div style={{ width: '100%', height: '1.5px', backgroundColor: '#DAD8CE' }} />
-        <div style={{ width: '100%', height: '1.5px', backgroundColor: '#DAD8CE' }} />
-        <div style={{ width: '100%', height: '1.5px', backgroundColor: '#DAD8CE' }} />
-        <div style={{ width: '100%', height: '1.5px', backgroundColor: '#DAD8CE' }} />
-      </div>
-
       {/* Row 1: Header (Hitotsuyo Logo, Ranking & Elimination Badges) */}
       <div
         style={{
@@ -145,7 +121,6 @@ export function MissionCardTemplate({
             </g>
           </svg>
 
-          {/* Ranking Badge */}
           {ranking === 'true' && (
             <div
               style={{
@@ -164,7 +139,6 @@ export function MissionCardTemplate({
             </div>
           )}
 
-          {/* Elimination Badge */}
           {elimination === 'true' && (
             <div
               style={{
@@ -244,6 +218,17 @@ export function MissionCardTemplate({
         </div>
       </div>
 
+      {/* Row 3: Heavy Divider Line between metadata and main content */}
+      <div
+        style={{
+          width: '100%',
+          height: '4px',
+          backgroundColor: '#100F0F',
+          marginBottom: '24px',
+          display: 'flex',
+        }}
+      />
+
       {/* Main Content Area (Highly expanded for OGP readability on X) */}
       <div
         style={{
@@ -251,19 +236,19 @@ export function MissionCardTemplate({
           flexDirection: 'column',
           flexGrow: 1,
           justifyContent: 'center',
-          marginBottom: '20px',
+          marginBottom: '24px',
         }}
       >
-        {/* Game Title (Positioned directly above the Mission Title) */}
+        {/* Game Title (Positioned directly above the Mission Title - enlarged and darkened) */}
         {game && (
           <span
             style={{
-              fontSize: '28px',
+              fontSize: '36px',
               fontWeight: 900,
-              color: '#6F6E69', // Flexoki ink-light
+              color: '#100F0F', // Flexoki ink-dark (fully dark)
               textTransform: 'uppercase',
               letterSpacing: '1.5px',
-              marginBottom: '10px',
+              marginBottom: '12px',
             }}
           >
             {game}
@@ -284,8 +269,8 @@ export function MissionCardTemplate({
           {title}
         </h1>
 
-        {/* Subtitle / Description */}
-        {subtitle && (
+        {/* Description */}
+        {description && (
           <p
             style={{
               fontSize: '32px',
@@ -295,7 +280,7 @@ export function MissionCardTemplate({
               lineHeight: '1.35',
             }}
           >
-            {subtitle}
+            {description}
           </p>
         )}
       </div>

@@ -1,6 +1,6 @@
 import type { OGParams } from '../types';
 
-export function DefaultTemplate({ title, subtitle, date }: OGParams) {
+export function DefaultTemplate({ title, description, date }: OGParams) {
   return (
     <div
       style={{
@@ -120,10 +120,10 @@ export function DefaultTemplate({ title, subtitle, date }: OGParams) {
                 letterSpacing: '1px',
               }}
             >
-              SUBTITLE
+              DESCRIPTION
             </span>
             <span style={{ fontSize: '28px', fontWeight: 700, color: '#ffffff' }}>
-              {subtitle}
+              {description}
             </span>
           </div>
 

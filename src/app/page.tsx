@@ -12,7 +12,7 @@ type ThemeValue = (typeof THEMES)[number]['value'];
 export default function Home() {
   const [theme, setTheme] = useState<ThemeValue>('default');
   const [title, setTitle] = useState('DYNAMIC OGP GENERATOR');
-  const [subtitle, setSubtitle] = useState('Vercel Edge Functions + @vercel/og');
+  const [description, setDescription] = useState('Vercel Edge Functions + @vercel/og');
   const [date, setDate] = useState('2026/05/30');
 
   // Mission-specific parameters
@@ -33,7 +33,7 @@ export default function Home() {
     setLoading(true);
     if (th === 'mission-card') {
       setTitle('来月の集中練習ミッション');
-      setSubtitle('来月に向けて今から参加登録！');
+      setDescription('来月に向けて今から参加登録！');
       setDate('26/05/31 〜 26/06/28');
       setRanking('false');
       setCondition('none');
@@ -43,7 +43,7 @@ export default function Home() {
       setElimination('false');
     } else {
       setTitle('DYNAMIC OGP GENERATOR');
-      setSubtitle('Vercel Edge Functions + @vercel/og');
+      setDescription('Vercel Edge Functions + @vercel/og');
       setDate('2026/05/30');
     }
   };
@@ -51,7 +51,7 @@ export default function Home() {
   const getOgpUrl = (
     th: ThemeValue,
     t: string,
-    sub: string,
+    desc: string,
     d: string,
     rn: string,
     co: string,
@@ -62,7 +62,7 @@ export default function Home() {
   ) => {
     if (typeof window === 'undefined') return '';
     const origin = window.location.origin;
-    const params = new URLSearchParams({ theme: th, title: t, subtitle: sub, date: d });
+    const params = new URLSearchParams({ theme: th, title: t, description: desc, date: d });
     
     if (th === 'mission-card') {
       params.append('ranking', rn);
@@ -76,7 +76,7 @@ export default function Home() {
   };
 
   useEffect(() => {
-    const newUrl = getOgpUrl(theme, title, subtitle, date, ranking, condition, capacity, metric, game, elimination);
+    const newUrl = getOgpUrl(theme, title, description, date, ranking, condition, capacity, metric, game, elimination);
     const handler = setTimeout(() => {
       if (newUrl !== debouncedUrl) {
         setDebouncedUrl(newUrl);
@@ -86,7 +86,7 @@ export default function Home() {
     }, 500);
 
     return () => clearTimeout(handler);
-  }, [theme, title, subtitle, date, ranking, condition, capacity, metric, game, elimination, debouncedUrl]);
+  }, [theme, title, description, date, ranking, condition, capacity, metric, game, elimination, debouncedUrl]);
 
   const handleCopy = async () => {
     try {
@@ -251,7 +251,7 @@ export default function Home() {
               />
             </div>
 
-            {/* Input: Subtitle */}
+            {/* Input: Description */}
             <div className="flex flex-col gap-2 mb-4">
               <label
                 className={`text-xs font-bold tracking-wider transition-colors duration-300 ${
@@ -262,9 +262,9 @@ export default function Home() {
               </label>
               <input
                 type="text"
-                value={subtitle}
+                value={description}
                 onChange={(e) => {
-                  setSubtitle(e.target.value);
+                  setDescription(e.target.value);
                   setLoading(true);
                 }}
                 className={`text-sm outline-none transition-all ${
@@ -531,7 +531,7 @@ export default function Home() {
 url_params = {
   theme: "mission-card",
   title: @mission.title,
-  subtitle: @mission.description, # カード内説明文
+  description: @mission.description, # カード内説明文
   game: current_game.title, # ゲーム名
   date: "#{@mission.start_at.strftime('%y/%m/%d')} 〜 #{@mission.end_at.strftime('%y/%m/%d')}",
   ranking: @mission.ranking_display != "none" ? "true" : "false",

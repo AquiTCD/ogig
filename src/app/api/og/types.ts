@@ -1,6 +1,6 @@
 export type OGParams = {
   title: string;
-  subtitle: string;
+  description: string;
   date: string;
   // Optional mission-specific params
   ranking?: string;

@@ -5,7 +5,7 @@ import type { OGTemplate } from './types';
 
 export const runtime = 'edge';
 
-const MAX_LENGTHS = { title: 100, subtitle: 80, date: 20 };
+const MAX_LENGTHS = { title: 100, description: 80, date: 20 };
 
 const TEMPLATES: Record<string, OGTemplate> = {
   default: DefaultTemplate,
@@ -35,7 +35,7 @@ export async function GET(request: Request) {
 
     const theme = searchParams.get('theme') || 'default';
     const title = (searchParams.get('title') || 'No Title').slice(0, MAX_LENGTHS.title);
-    const subtitle = (searchParams.get('subtitle') || 'Sub Title').slice(0, MAX_LENGTHS.subtitle);
+    const description = (searchParams.get('description') || 'Description').slice(0, MAX_LENGTHS.description);
     const date = (searchParams.get('date') || 'YYYY/MM/DD').slice(0, MAX_LENGTHS.date);
 
     const ranking = searchParams.get('ranking') || undefined;
@@ -59,7 +59,7 @@ export async function GET(request: Request) {
     return new ImageResponse(
       <Template
         title={title}
-        subtitle={subtitle}
+        description={description}
         date={date}
         ranking={ranking}
         condition={condition}
