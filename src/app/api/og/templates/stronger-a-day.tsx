@@ -8,60 +8,56 @@ export function StrongerADayTemplate({ title, subtitle, date }: OGParams) {
         flexDirection: 'column',
         width: '1200px',
         height: '630px',
-        backgroundColor: '#0f172a',
-        color: '#ffffff',
+        backgroundColor: '#FFFCF0', // Flexoki paper
+        color: '#100F0F', // Flexoki ink-dark
         fontFamily: 'Noto Sans JP',
         position: 'relative',
-        padding: '60px 80px',
+        padding: '60px 80px 60px 160px', // Shift content to the right of the red margin line
         boxSizing: 'border-box',
         overflow: 'hidden',
+        border: '12px solid #100F0F', // Heavy border
       }}
     >
-      {/* Glow accent top-right */}
-      <div
-        style={{
-          position: 'absolute',
-          top: '-200px',
-          right: '-100px',
-          width: '700px',
-          height: '700px',
-          borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(34,211,238,0.12) 0%, rgba(0,0,0,0) 65%)',
-          display: 'flex',
-        }}
-      />
-
-      {/* Glow accent bottom-left */}
-      <div
-        style={{
-          position: 'absolute',
-          bottom: '-200px',
-          left: '-100px',
-          width: '500px',
-          height: '500px',
-          borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(99,102,241,0.1) 0%, rgba(0,0,0,0) 65%)',
-          display: 'flex',
-        }}
-      />
-
-      {/* Subtle grid lines */}
+      {/* Notebook red vertical margin line */}
       <div
         style={{
           position: 'absolute',
           top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          backgroundImage:
-            'linear-gradient(rgba(34,211,238,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(34,211,238,0.04) 1px, transparent 1px)',
-          backgroundSize: '60px 60px',
+          bottom: 0,
+          left: '120px',
+          width: '2px',
+          backgroundColor: '#ecb0ac', // Flexoki action-light (coral-light)
+          opacity: 0.8,
           display: 'flex',
         }}
       />
 
-      {/* Top badge: MISSION */}
-      <div style={{ display: 'flex', marginBottom: '36px', alignItems: 'center', gap: '16px' }}>
+      {/* Notebook ruled horizontal lines (background) */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          bottom: 0,
+          left: 0,
+          right: 0,
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          padding: '120px 0 100px 0',
+          opacity: 0.35,
+          pointerEvents: 'none',
+        }}
+      >
+        <div style={{ width: '100%', height: '1.5px', backgroundColor: '#E6E4D9' }} />
+        <div style={{ width: '100%', height: '1.5px', backgroundColor: '#E6E4D9' }} />
+        <div style={{ width: '100%', height: '1.5px', backgroundColor: '#E6E4D9' }} />
+        <div style={{ width: '100%', height: '1.5px', backgroundColor: '#E6E4D9' }} />
+        <div style={{ width: '100%', height: '1.5px', backgroundColor: '#E6E4D9' }} />
+        <div style={{ width: '100%', height: '1.5px', backgroundColor: '#E6E4D9' }} />
+      </div>
+
+      {/* Top badge: MISSION (No rounded corners, heavy border) */}
+      <div style={{ display: 'flex', marginBottom: '30px', alignItems: 'center', gap: '16px' }}>
         <div style={{ position: 'relative', display: 'flex' }}>
           <div
             style={{
@@ -70,8 +66,8 @@ export function StrongerADayTemplate({ title, subtitle, date }: OGParams) {
               left: 0,
               width: '100%',
               height: '100%',
-              backgroundColor: '#22d3ee',
-              transform: 'skew(-10deg)',
+              backgroundColor: '#e28883', // Flexoki action (coral)
+              border: '3px solid #100F0F',
               display: 'flex',
             }}
           />
@@ -80,9 +76,9 @@ export function StrongerADayTemplate({ title, subtitle, date }: OGParams) {
               position: 'relative',
               fontSize: '18px',
               fontWeight: 900,
-              color: '#0f172a',
-              padding: '5px 18px',
-              letterSpacing: '3px',
+              color: '#100F0F',
+              padding: '6px 20px',
+              letterSpacing: '2px',
             }}
           >
             MISSION
@@ -92,7 +88,7 @@ export function StrongerADayTemplate({ title, subtitle, date }: OGParams) {
           style={{
             fontSize: '14px',
             fontWeight: 700,
-            color: '#475569',
+            color: '#6F6E69', // Flexoki ink
             letterSpacing: '2px',
           }}
         >
@@ -100,22 +96,22 @@ export function StrongerADayTemplate({ title, subtitle, date }: OGParams) {
         </span>
       </div>
 
-      {/* Mission Title */}
+      {/* Title */}
       <div
         style={{
           display: 'flex',
           flexDirection: 'column',
           flexGrow: 1,
           justifyContent: 'center',
-          marginBottom: '24px',
+          marginBottom: '20px',
         }}
       >
         <h1
           style={{
-            fontSize: '62px',
+            fontSize: '60px',
             fontWeight: 900,
-            lineHeight: '1.25',
-            color: '#f1f5f9',
+            lineHeight: '1.35',
+            color: '#100F0F',
             margin: 0,
             wordBreak: 'break-all',
           }}
@@ -130,75 +126,62 @@ export function StrongerADayTemplate({ title, subtitle, date }: OGParams) {
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'flex-end',
-          borderTop: '1px solid rgba(34,211,238,0.2)',
-          paddingTop: '28px',
+          borderTop: '4px solid #100F0F',
+          paddingTop: '30px',
         }}
       >
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          {/* Game label */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          {/* Subtitle Info */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <span
               style={{
-                fontSize: '13px',
+                fontSize: '16px',
                 fontWeight: 900,
-                color: '#22d3ee',
-                letterSpacing: '2px',
+                color: '#e28883', // Flexoki action (coral)
+                letterSpacing: '1px',
               }}
             >
               GAME
             </span>
-            <span style={{ fontSize: '26px', fontWeight: 700, color: '#e2e8f0' }}>
+            <span style={{ fontSize: '26px', fontWeight: 700, color: '#100F0F' }}>
               {subtitle}
             </span>
           </div>
 
-          {/* Period label */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+          {/* Date Info */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <span
               style={{
-                fontSize: '13px',
+                fontSize: '16px',
                 fontWeight: 900,
-                color: '#64748b',
-                letterSpacing: '2px',
+                color: '#6F6E69', // Flexoki ink
+                letterSpacing: '1px',
               }}
             >
               PERIOD
             </span>
-            <span style={{ fontSize: '22px', fontWeight: 500, color: '#94a3b8' }}>
+            <span style={{ fontSize: '22px', fontWeight: 500, color: '#6F6E69' }}>
               {date}
             </span>
           </div>
         </div>
 
-        {/* Branding */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px' }}>
-          <div style={{ display: 'flex', position: 'relative' }}>
-            <div
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-                backgroundColor: '#1e293b',
-                border: '1px solid rgba(34,211,238,0.4)',
-                transform: 'skew(-10deg)',
-                display: 'flex',
-              }}
-            />
-            <span
-              style={{
-                position: 'relative',
-                fontSize: '16px',
-                fontWeight: 900,
-                color: '#22d3ee',
-                padding: '6px 16px',
-                letterSpacing: '1px',
-              }}
-            >
-              OGIG
-            </span>
-          </div>
+        {/* Logo Badge (SVG Vector from logo_b.svg) */}
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <svg viewBox="0 0 5315 1418" style={{ width: '180px', height: '48px', fill: '#100F0F' }}>
+            <g transform="matrix(1,0,0,1,118.11,0)">
+              <path d="M0,1299.21L1181.1,1299.21L1181.1,909.449L389.764,909.449L389.764,708.661L1181.1,708.661L1181.1,318.898L389.764,318.898L389.764,118.11L0,118.11L0,1299.21Z" />
+            </g>
+            <g transform="matrix(1,0,0,1,2722.44,-1299.21)">
+              <path d="M1181.1,2598.43L1181.1,1417.32L909.449,1417.32L909.449,2208.66L0,2208.66L0,2598.43L1181.1,2598.43ZM265.748,1417.32L-5.906,1417.32L-5.906,2025.59L265.748,2025.59L265.748,1417.32ZM726.378,1417.32L454.724,1417.32L454.724,2025.59L726.378,2025.59L726.378,1417.32Z" />
+            </g>
+            <g transform="matrix(1,0,0,1,2722.44,-1299.21)">
+              <path d="M2480.32,2598.43L2480.32,1417.32L1299.21,1417.32L1299.21,1688.98L2090.55,1688.98L2090.55,1872.05L1299.21,1872.05L1299.21,2143.7L2090.55,2143.7L2090.55,2326.77L1299.21,2326.77L1299.21,2598.43L2480.32,2598.43Z" />
+            </g>
+            <g transform="matrix(1,0,0,1,118.11,0)">
+              <path d="M1688.98,513.78L1688.98,118.11L1299.21,118.11L1299.21,1299.21L1688.98,1299.21L1688.98,903.543L2480.32,903.543L2480.32,513.78L1688.98,513.78Z" />
+            </g>
+          </svg>
         </div>
       </div>
     </div>
