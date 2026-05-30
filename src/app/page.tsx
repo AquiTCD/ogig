@@ -14,19 +14,69 @@ export default function Home() {
   const [title, setTitle] = useState('DYNAMIC OGP GENERATOR');
   const [subtitle, setSubtitle] = useState('Vercel Edge Functions + @vercel/og');
   const [date, setDate] = useState('2026/05/30');
+
+  // Mission-specific parameters
+  const [status, setStatus] = useState('active');
+  const [ranking, setRanking] = useState('false');
+  const [condition, setCondition] = useState('none');
+  const [participants, setParticipants] = useState('2 / 20');
+  const [metric, setMetric] = useState('対戦本数 累計');
+  const [creator, setCreator] = useState('デブユーザー');
+
   const [debouncedUrl, setDebouncedUrl] = useState('');
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const getOgpUrl = (th: ThemeValue, t: string, sub: string, d: string) => {
+  // Handle theme changes and reset parameters to template defaults
+  const handleThemeChange = (th: ThemeValue) => {
+    setTheme(th);
+    setLoading(true);
+    if (th === 'stronger-a-day') {
+      setTitle('来月の集中練習ミッション');
+      setSubtitle('来月に向けて今から参加登録！');
+      setDate('26/05/31 〜 26/06/28');
+      setStatus('upcoming');
+      setRanking('false');
+      setCondition('none');
+      setParticipants('2 / 20');
+      setMetric('参加のみ');
+      setCreator('デブユーザー');
+    } else {
+      setTitle('DYNAMIC OGP GENERATOR');
+      setSubtitle('Vercel Edge Functions + @vercel/og');
+      setDate('2026/05/30');
+    }
+  };
+
+  const getOgpUrl = (
+    th: ThemeValue,
+    t: string,
+    sub: string,
+    d: string,
+    st: string,
+    rn: string,
+    co: string,
+    pa: string,
+    me: string,
+    cr: string
+  ) => {
     if (typeof window === 'undefined') return '';
     const origin = window.location.origin;
     const params = new URLSearchParams({ theme: th, title: t, subtitle: sub, date: d });
+    
+    if (th === 'stronger-a-day') {
+      params.append('status', st);
+      params.append('ranking', rn);
+      params.append('condition', co);
+      params.append('participants', pa);
+      params.append('metric', me);
+      params.append('creator', cr);
+    }
     return `${origin}/api/og?${params.toString()}`;
   };
 
   useEffect(() => {
-    const newUrl = getOgpUrl(theme, title, subtitle, date);
+    const newUrl = getOgpUrl(theme, title, subtitle, date, status, ranking, condition, participants, metric, creator);
     const handler = setTimeout(() => {
       if (newUrl !== debouncedUrl) {
         setDebouncedUrl(newUrl);
@@ -36,7 +86,7 @@ export default function Home() {
     }, 500);
 
     return () => clearTimeout(handler);
-  }, [theme, title, subtitle, date, debouncedUrl]);
+  }, [theme, title, subtitle, date, status, ranking, condition, participants, metric, creator, debouncedUrl]);
 
   const handleCopy = async () => {
     try {
@@ -69,7 +119,7 @@ export default function Home() {
 
       {isStronger && (
         <div
-          className="absolute inset-0 pointer-events-none opacity-20 animate-fade-in"
+          className="absolute inset-0 pointer-events-none opacity-20"
           style={{
             backgroundImage:
               'linear-gradient(to bottom, transparent 39px, #DAD8CE 39px, #DAD8CE 40px)',
@@ -158,10 +208,7 @@ export default function Home() {
                   return (
                     <button
                       key={t.value}
-                      onClick={() => {
-                        setTheme(t.value);
-                        setLoading(true);
-                      }}
+                      onClick={() => handleThemeChange(t.value)}
                       className={`px-4 py-2 text-xs font-bold border transition-all ${
                         isStronger
                           ? isActive
@@ -169,7 +216,7 @@ export default function Home() {
                             : 'bg-[#E6E4D9] border-2 border-[#100F0F] text-[#6F6E69] rounded-none hover:bg-[#ecb0ac] hover:text-[#100F0F]'
                           : isActive
                           ? 'bg-red-950/40 border-red-600 text-red-300 rounded-lg'
-                          : 'bg-zinc-950/40 border-zinc-800 text-zinc-500 rounded-lg hover:border-zinc-650'
+                          : 'bg-zinc-950/40 border-zinc-800 text-zinc-500 rounded-lg hover:border-zinc-600'
                       }`}
                     >
                       {t.label}
@@ -186,7 +233,7 @@ export default function Home() {
                   isStronger ? 'text-[#100F0F]' : 'text-zinc-400'
                 }`}
               >
-                TITLE
+                {isStronger ? 'MISSION TITLE' : 'TITLE'}
               </label>
               <textarea
                 value={title}
@@ -194,13 +241,13 @@ export default function Home() {
                   setTitle(e.target.value);
                   setLoading(true);
                 }}
-                rows={3}
+                rows={2}
                 className={`text-sm outline-none transition-all resize-none ${
                   isStronger
                     ? 'bg-[#FFFFFF] border-2 border-[#100F0F] text-[#100F0F] px-3 py-2 rounded focus:ring-2 focus:ring-[#e28883] focus:ring-offset-1'
                     : 'bg-zinc-950/60 border border-zinc-800 text-zinc-100 px-3 py-2 rounded-lg focus:border-red-600 focus:ring-1 focus:ring-red-600'
                 }`}
-                placeholder="メインタイトルを入力"
+                placeholder="タイトルを入力"
               />
             </div>
 
@@ -211,7 +258,7 @@ export default function Home() {
                   isStronger ? 'text-[#100F0F]' : 'text-zinc-400'
                 }`}
               >
-                {isStronger ? 'SUBTITLE / GAME' : 'SUBTITLE'}
+                {isStronger ? 'DESCRIPTION' : 'SUBTITLE'}
               </label>
               <input
                 type="text"
@@ -225,7 +272,7 @@ export default function Home() {
                     ? 'bg-[#FFFFFF] border-2 border-[#100F0F] text-[#100F0F] px-3 py-2 rounded focus:ring-2 focus:ring-[#e28883] focus:ring-offset-1'
                     : 'bg-zinc-950/60 border border-zinc-800 text-zinc-100 px-3 py-2 rounded-lg focus:border-red-600 focus:ring-1 focus:ring-red-600'
                 }`}
-                placeholder="サブタイトルやゲーム名を入力"
+                placeholder="説明やサブタイトルを入力"
               />
             </div>
 
@@ -236,7 +283,7 @@ export default function Home() {
                   isStronger ? 'text-[#100F0F]' : 'text-zinc-400'
                 }`}
               >
-                {isStronger ? 'DATE / PERIOD' : 'DATE'}
+                {isStronger ? 'PERIOD' : 'DATE'}
               </label>
               <input
                 type="text"
@@ -253,6 +300,106 @@ export default function Home() {
                 placeholder="期間や日付を入力 (例: 2026/05/30)"
               />
             </div>
+
+            {/* Mission Specific Parameters Form */}
+            {isStronger && (
+              <div className="flex flex-col gap-4 mb-4">
+                {/* Status & Ranking */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="flex flex-col gap-2">
+                    <label className="text-xs font-bold text-[#100F0F] tracking-wider">STATUS</label>
+                    <select
+                      value={status}
+                      onChange={(e) => {
+                        setStatus(e.target.value);
+                        setLoading(true);
+                      }}
+                      className="bg-[#FFFFFF] border-2 border-[#100F0F] text-[#100F0F] px-3 py-2 rounded text-sm outline-none focus:ring-2 focus:ring-[#e28883] cursor-pointer"
+                    >
+                      <option value="active">開催中</option>
+                      <option value="upcoming">開催前</option>
+                      <option value="ended">終了済み</option>
+                    </select>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <label className="text-xs font-bold text-[#100F0F] tracking-wider">RANKING</label>
+                    <select
+                      value={ranking}
+                      onChange={(e) => {
+                        setRanking(e.target.value);
+                        setLoading(true);
+                      }}
+                      className="bg-[#FFFFFF] border-2 border-[#100F0F] text-[#100F0F] px-3 py-2 rounded text-sm outline-none focus:ring-2 focus:ring-[#e28883] cursor-pointer"
+                    >
+                      <option value="false">無し</option>
+                      <option value="true">有り (🏆)</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Condition & Participants */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="flex flex-col gap-2">
+                    <label className="text-xs font-bold text-[#100F0F] tracking-wider">CONDITION</label>
+                    <select
+                      value={condition}
+                      onChange={(e) => {
+                        setCondition(e.target.value);
+                        setLoading(true);
+                      }}
+                      className="bg-[#FFFFFF] border-2 border-[#100F0F] text-[#100F0F] px-3 py-2 rounded text-sm outline-none focus:ring-2 focus:ring-[#e28883] cursor-pointer"
+                    >
+                      <option value="none">制限なし</option>
+                      <option value="approval">承認制 (✔)</option>
+                      <option value="invite">招待制 (🔑)</option>
+                    </select>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <label className="text-xs font-bold text-[#100F0F] tracking-wider">PARTICIPANTS</label>
+                    <input
+                      type="text"
+                      value={participants}
+                      onChange={(e) => {
+                        setParticipants(e.target.value);
+                        setLoading(true);
+                      }}
+                      className="bg-[#FFFFFF] border-2 border-[#100F0F] text-[#100F0F] px-3 py-2 rounded text-sm outline-none focus:ring-2 focus:ring-[#e28883]"
+                      placeholder="例: 2 / 20"
+                    />
+                  </div>
+                </div>
+
+                {/* Metric & Creator */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="flex flex-col gap-2">
+                    <label className="text-xs font-bold text-[#100F0F] tracking-wider">METRIC</label>
+                    <input
+                      type="text"
+                      value={metric}
+                      onChange={(e) => {
+                        setMetric(e.target.value);
+                        setLoading(true);
+                      }}
+                      className="bg-[#FFFFFF] border-2 border-[#100F0F] text-[#100F0F] px-3 py-2 rounded text-sm outline-none focus:ring-2 focus:ring-[#e28883]"
+                      placeholder="例: 対戦本数 累計"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <label className="text-xs font-bold text-[#100F0F] tracking-wider">CREATOR</label>
+                    <input
+                      type="text"
+                      value={creator}
+                      onChange={(e) => {
+                        setCreator(e.target.value);
+                        setLoading(true);
+                      }}
+                      className="bg-[#FFFFFF] border-2 border-[#100F0F] text-[#100F0F] px-3 py-2 rounded text-sm outline-none focus:ring-2 focus:ring-[#e28883]"
+                      placeholder="例: デブユーザー"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Divider */}
             <div className={`h-px my-4 transition-colors duration-300 ${isStronger ? 'bg-[#100F0F]' : 'bg-zinc-800/60'}`} />
@@ -377,15 +524,27 @@ export default function Home() {
                 className={`font-mono text-[10px] p-2.5 rounded border overflow-x-auto leading-relaxed transition-all duration-300 ${
                   isStronger
                     ? 'bg-[#F2F0E5] border-[#100F0F] text-[#100F0F]'
-                    : 'bg-zinc-950/80 border-zinc-900 text-zinc-500'
+                    : 'bg-zinc-950/80 border-zinc-900 text-zinc-550'
                 }`}
               >
-{`# 例: Ruby on Rails での OGP URL 組み立て
+{isStronger ? `# 例: Ruby on Rails での OGP URL 組み立て (Stronger a Day)
 url_params = {
   theme: "stronger-a-day",
   title: @mission.title,
-  subtitle: current_game.title,
-  date: "#{@mission.start_at.strftime('%Y/%m/%d')} 〜 #{@mission.end_at.strftime('%Y/%m/%d')}"
+  subtitle: @mission.description, # カード内説明文
+  date: "#{@mission.start_at.strftime('%y/%m/%d')} 〜 #{@mission.end_at.strftime('%y/%m/%d')}",
+  status: @mission.finished? ? "ended" : (@mission.upcoming? ? "upcoming" : "active"),
+  ranking: @mission.ranking_display != "none" ? "true" : "false",
+  condition: @mission.invite_only? ? "invite" : (@mission.approval_required? ? "approval" : "none"),
+  participants: "#{@mission.active_participants_count} / #{@mission.capacity || '∞'}",
+  metric: "#{@mission.metric_label} 累計",
+  creator: @mission.owner.name
+}
+@og_image = "https://ogig.vercel.app/api/og?#{url_params.to_query}"` : `# 例: Ruby on Rails での OGP URL 組み立て
+url_params = {
+  title: @article.title,
+  subtitle: @article.category,
+  date: @article.published_at.strftime('%Y/%m/%d')
 }
 @og_image = "https://ogig.vercel.app/api/og?#{url_params.to_query}"`}
               </pre>

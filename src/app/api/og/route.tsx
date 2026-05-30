@@ -38,6 +38,13 @@ export async function GET(request: Request) {
     const subtitle = (searchParams.get('subtitle') || 'Sub Title').slice(0, MAX_LENGTHS.subtitle);
     const date = (searchParams.get('date') || 'YYYY/MM/DD').slice(0, MAX_LENGTHS.date);
 
+    const status = searchParams.get('status') || undefined;
+    const ranking = searchParams.get('ranking') || undefined;
+    const condition = searchParams.get('condition') || undefined;
+    const participants = searchParams.get('participants') || undefined;
+    const metric = searchParams.get('metric') || undefined;
+    const creator = searchParams.get('creator') || undefined;
+
     const Template = TEMPLATES[theme] ?? TEMPLATES.default;
 
     let fontData: ArrayBuffer;
@@ -48,7 +55,18 @@ export async function GET(request: Request) {
       return new Response('Font fetch error', { status: 500 });
     }
 
-    return new ImageResponse(<Template title={title} subtitle={subtitle} date={date} />, {
+    return new ImageResponse(
+      <Template
+        title={title}
+        subtitle={subtitle}
+        date={date}
+        status={status}
+        ranking={ranking}
+        condition={condition}
+        participants={participants}
+        metric={metric}
+        creator={creator}
+      />, {
       width: 1200,
       height: 630,
       fonts: [
