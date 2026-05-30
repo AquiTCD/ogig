@@ -37,6 +37,15 @@ const ChartBarIcon = ({ size, color }: { size: number; color: string }) => (
   </svg>
 );
 
+// Dynamic font size logic for title to prevent overflow on mobile OGP
+const getTitleFontSize = (titleText: string) => {
+  const len = titleText.length;
+  if (len > 35) return '44px';
+  if (len > 25) return '52px';
+  if (len > 15) return '60px';
+  return '68px'; // Default slightly smaller than 80px for balanced look
+};
+
 export function MissionCardTemplate({
   title,
   subtitle,
@@ -45,7 +54,6 @@ export function MissionCardTemplate({
   condition = 'none',
   capacity = '制限なし',
   metric = '参加のみ',
-  owner = 'オーナー',
 }: OGParams) {
   return (
     <div
@@ -58,7 +66,7 @@ export function MissionCardTemplate({
         color: '#100F0F', // Flexoki ink-dark
         fontFamily: 'Noto Sans JP',
         position: 'relative',
-        padding: '50px 60px 50px 180px', // Shift content right of the red line
+        padding: '40px 50px 40px 180px', // Shift content right of the red line
         boxSizing: 'border-box',
         overflow: 'hidden',
         border: '16px solid #100F0F', // Heavy border (makes OGP itself look like a card)
@@ -102,22 +110,19 @@ export function MissionCardTemplate({
         <div style={{ width: '100%', height: '1.5px', backgroundColor: '#E6E4D9' }} />
       </div>
 
-      {/* Top Header: Brand name, Logo and Capacity */}
+      {/* Row 1: Header (Hitotsuyo Logo & Condition Badge) */}
       <div
         style={{
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
           width: '100%',
-          marginBottom: '24px',
+          marginBottom: '16px',
         }}
       >
-        {/* Left: Brand name + logo */}
+        {/* Left: Brand logo & left badges (e.g. Ranking) */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <span style={{ fontSize: '22px', fontWeight: 900, color: '#6F6E69', letterSpacing: '2px' }}>
-            STRONGER A DAY
-          </span>
-          <svg viewBox="0 0 5315 1418" style={{ width: '120px', height: '32px', fill: '#100F0F' }}>
+          <svg viewBox="0 0 5315 1418" style={{ width: '150px', height: '40px', fill: '#100F0F' }}>
             <g transform="matrix(1,0,0,1,118.11,0)">
               <path d="M0,1299.21L1181.1,1299.21L1181.1,909.449L389.764,909.449L389.764,708.661L1181.1,708.661L1181.1,318.898L389.764,318.898L389.764,118.11L0,118.11L0,1299.21Z" />
             </g>
@@ -131,58 +136,84 @@ export function MissionCardTemplate({
               <path d="M1688.98,513.78L1688.98,118.11L1299.21,118.11L1299.21,1299.21L1688.98,1299.21L1688.98,903.543L2480.32,903.543L2480.32,513.78L1688.98,513.78Z" />
             </g>
           </svg>
+
+          {ranking === 'true' && (
+            <div
+              style={{
+                display: 'flex',
+                backgroundColor: '#ad8300', // Flexoki yellow
+                padding: '6px 14px',
+                borderRadius: '6px',
+                alignItems: 'center',
+                gap: '6px',
+              }}
+            >
+              <TrophyIcon size={22} color="#FFFFFF" />
+              <span style={{ fontSize: '20px', fontWeight: 900, color: '#FFFFFF', letterSpacing: '0.5px' }}>
+                ランキング
+              </span>
+            </div>
+          )}
         </div>
 
-        {/* Right: Capacity (Using Inline UsersThreeIcon) */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <UsersThreeIcon size={36} color="#100F0F" />
-          <span style={{ fontSize: '32px', fontWeight: 900, color: '#100F0F' }}>
-            定員 {capacity}
-          </span>
-        </div>
-      </div>
-
-      {/* Badges Row (Trophy & Conditions - Font enlarged for mobile readability) */}
-      <div style={{ display: 'flex', gap: '12px', marginBottom: '16px' }}>
-        {ranking === 'true' && (
-          <div
-            style={{
-              display: 'flex',
-              backgroundColor: '#ad8300', // Flexoki yellow
-              padding: '8px 18px',
-              borderRadius: '6px',
-              alignItems: 'center',
-              gap: '8px',
-            }}
-          >
-            <TrophyIcon size={26} color="#FFFFFF" />
-            <span style={{ fontSize: '24px', fontWeight: 900, color: '#FFFFFF', letterSpacing: '1px' }}>
-              ランキング
-            </span>
-          </div>
-        )}
-
+        {/* Right: Condition Badge (招待制 / 承認制) */}
         {condition !== 'none' && (
           <div
             style={{
               display: 'flex',
               backgroundColor: '#5e405f', // Flexoki purple
-              padding: '8px 18px',
+              padding: '6px 14px',
               borderRadius: '6px',
               alignItems: 'center',
-              gap: '8px',
+              gap: '6px',
             }}
           >
             {condition === 'invite' ? (
-              <KeyIcon size={26} color="#FFFFFF" />
+              <KeyIcon size={22} color="#FFFFFF" />
             ) : (
-              <CheckCircleIcon size={26} color="#FFFFFF" />
+              <CheckCircleIcon size={22} color="#FFFFFF" />
             )}
-            <span style={{ fontSize: '24px', fontWeight: 900, color: '#FFFFFF', letterSpacing: '1px' }}>
+            <span style={{ fontSize: '20px', fontWeight: 900, color: '#FFFFFF', letterSpacing: '0.5px' }}>
               {condition === 'invite' ? '招待制' : '承認制'}
             </span>
           </div>
         )}
+      </div>
+
+      {/* Row 2: Ruled Period & Capacity info (Under the condition badge on the right) */}
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          width: '100%',
+          marginBottom: '20px',
+        }}
+      >
+        {/* Left: Period Badge (Black background with white text) */}
+        <div
+          style={{
+            display: 'flex',
+            backgroundColor: '#100F0F',
+            padding: '8px 16px',
+            borderRadius: '6px',
+            alignItems: 'center',
+            gap: '8px',
+          }}
+        >
+          <CalendarIcon size={26} color="#FFFFFF" />
+          <span style={{ fontSize: '28px', fontWeight: 900, color: '#FFFFFF', letterSpacing: '0.5px' }}>
+            {date}
+          </span>
+        </div>
+
+        {/* Right: Capacity (Aligns underneath the condition badge on the right) */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <UsersThreeIcon size={32} color="#100F0F" />
+          <span style={{ fontSize: '28px', fontWeight: 900, color: '#100F0F' }}>
+            定員 {capacity}
+          </span>
+        </div>
       </div>
 
       {/* Main Content Area (Highly expanded for OGP readability on X) */}
@@ -192,15 +223,15 @@ export function MissionCardTemplate({
           flexDirection: 'column',
           flexGrow: 1,
           justifyContent: 'center',
-          marginBottom: '24px',
+          marginBottom: '20px',
         }}
       >
-        {/* Title (Huge font size for mobile timeline) */}
+        {/* Title (Huge font size for mobile timeline, dynamically scaled) */}
         <h1
           style={{
-            fontSize: '80px',
+            fontSize: getTitleFontSize(title),
             fontWeight: 900,
-            lineHeight: '1.2',
+            lineHeight: '1.25',
             color: '#100F0F',
             margin: 0,
             wordBreak: 'break-all',
@@ -213,9 +244,9 @@ export function MissionCardTemplate({
         {subtitle && (
           <p
             style={{
-              fontSize: '36px',
+              fontSize: '32px',
               color: '#6F6E69',
-              margin: '16px 0 0 0',
+              margin: '12px 0 0 0',
               fontWeight: 500,
               lineHeight: '1.35',
             }}
@@ -230,55 +261,30 @@ export function MissionCardTemplate({
         style={{
           display: 'flex',
           justifyContent: 'space-between',
-          alignItems: 'flex-end',
-          borderTop: '5px solid #100F0F',
-          paddingTop: '25px',
+          alignItems: 'center',
+          borderTop: '4px solid #100F0F',
+          paddingTop: '20px',
         }}
       >
-        {/* Badges: Period & Metric */}
-        <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-          {/* Period Badge (Black background with white text) */}
-          <div
-            style={{
-              display: 'flex',
-              backgroundColor: '#100F0F',
-              padding: '8px 18px',
-              borderRadius: '6px',
-              alignItems: 'center',
-              gap: '10px',
-            }}
-          >
-            <CalendarIcon size={30} color="#FFFFFF" />
-            <span style={{ fontSize: '32px', fontWeight: 900, color: '#FFFFFF', letterSpacing: '0.5px' }}>
-              {date}
-            </span>
-          </div>
-
-          {/* Metric Badge (White background with heavy black borders) */}
-          <div
-            style={{
-              display: 'flex',
-              border: '4px solid #100F0F',
-              backgroundColor: '#FFFFFF',
-              padding: '6px 16px',
-              borderRadius: '6px',
-              alignItems: 'center',
-              gap: '8px',
-            }}
-          >
-            <ChartBarIcon size={30} color="#100F0F" />
-            <span style={{ fontSize: '32px', fontWeight: 900, color: '#100F0F' }}>
-              {metric}
-            </span>
-          </div>
-        </div>
-
-        {/* Owner details */}
-        {owner && (
-          <span style={{ fontSize: '32px', fontWeight: 900, color: '#100F0F' }}>
-            by @{owner}
+        {/* Metric Badge (White background with heavy black borders) */}
+        <div
+          style={{
+            display: 'flex',
+            border: '3px solid #100F0F',
+            backgroundColor: '#FFFFFF',
+            padding: '4px 12px',
+            borderRadius: '6px',
+            alignItems: 'center',
+            gap: '6px',
+          }}
+        >
+          <ChartBarIcon size={26} color="#100F0F" />
+          <span style={{ fontSize: '26px', fontWeight: 900, color: '#100F0F' }}>
+            {metric}
           </span>
-        )}
+        </div>
+        
+        {/* Right side is intentionally empty as Owner details have been removed */}
       </div>
     </div>
   );

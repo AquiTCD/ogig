@@ -20,7 +20,6 @@ export default function Home() {
   const [condition, setCondition] = useState('none');
   const [capacity, setCapacity] = useState('20名');
   const [metric, setMetric] = useState('参加のみ');
-  const [owner, setOwner] = useState('デブユーザー');
 
   const [debouncedUrl, setDebouncedUrl] = useState('');
   const [copied, setCopied] = useState(false);
@@ -38,7 +37,6 @@ export default function Home() {
       setCondition('none');
       setCapacity('20名');
       setMetric('参加のみ');
-      setOwner('デブユーザー');
     } else {
       setTitle('DYNAMIC OGP GENERATOR');
       setSubtitle('Vercel Edge Functions + @vercel/og');
@@ -54,8 +52,7 @@ export default function Home() {
     rn: string,
     co: string,
     pa: string,
-    me: string,
-    ow: string
+    me: string
   ) => {
     if (typeof window === 'undefined') return '';
     const origin = window.location.origin;
@@ -66,13 +63,12 @@ export default function Home() {
       params.append('condition', co);
       params.append('capacity', pa);
       params.append('metric', me);
-      params.append('owner', ow);
     }
     return `${origin}/api/og?${params.toString()}`;
   };
 
   useEffect(() => {
-    const newUrl = getOgpUrl(theme, title, subtitle, date, ranking, condition, capacity, metric, owner);
+    const newUrl = getOgpUrl(theme, title, subtitle, date, ranking, condition, capacity, metric);
     const handler = setTimeout(() => {
       if (newUrl !== debouncedUrl) {
         setDebouncedUrl(newUrl);
@@ -82,7 +78,7 @@ export default function Home() {
     }, 500);
 
     return () => clearTimeout(handler);
-  }, [theme, title, subtitle, date, ranking, condition, capacity, metric, owner, debouncedUrl]);
+  }, [theme, title, subtitle, date, ranking, condition, capacity, metric, debouncedUrl]);
 
   const handleCopy = async () => {
     try {
@@ -363,20 +359,6 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* Owner */}
-                <div className="flex flex-col gap-2">
-                  <label className="text-xs font-bold text-[#100F0F] tracking-wider">OWNER</label>
-                  <input
-                    type="text"
-                    value={owner}
-                    onChange={(e) => {
-                      setOwner(e.target.value);
-                      setLoading(true);
-                    }}
-                    className="bg-[#FFFFFF] border-2 border-[#100F0F] text-[#100F0F] px-3 py-2 rounded text-sm outline-none focus:ring-2 focus:ring-[#e28883]"
-                    placeholder="例: デブユーザー"
-                  />
-                </div>
               </div>
             )}
 
@@ -515,8 +497,7 @@ url_params = {
   ranking: @mission.ranking_display != "none" ? "true" : "false",
   condition: @mission.invite_only? ? "invite" : (@mission.approval_required? ? "approval" : "none"),
   capacity: @mission.capacity.present? ? "#{@mission.capacity}名" : "制限なし",
-  metric: "#{@mission.metric_label} 累計",
-  owner: @mission.owner.name
+  metric: "#{@mission.metric_label} 累計"
 }
 @og_image = "https://ogig.vercel.app/api/og?#{url_params.to_query}"` : `# 例: Ruby on Rails での OGP URL 組み立て
 url_params = {
