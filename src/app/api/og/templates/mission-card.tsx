@@ -55,7 +55,7 @@ export function MissionCardTemplate({
   title,
   description,
   date,
-  ranking = 'none',
+  ranking = 'false',
   condition = 'none',
   capacity = '制限なし',
   metric = '参加のみ',
@@ -120,7 +120,7 @@ export function MissionCardTemplate({
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <svg viewBox="0 0 5315 1418" style={{ width: '150px', height: '40px', fill: '#100F0F', marginRight: '6px' }}>
+          <svg viewBox="0 0 5315 1418" style={{ width: '150px', height: '40px', fill: '#100F0F' }}>
             <g transform="matrix(1,0,0,1,118.11,0)">
               <path d="M0,1299.21L1181.1,1299.21L1181.1,909.449L389.764,909.449L389.764,708.661L1181.1,708.661L1181.1,318.898L389.764,318.898L389.764,118.11L0,118.11L0,1299.21Z" />
             </g>
@@ -135,20 +135,23 @@ export function MissionCardTemplate({
             </g>
           </svg>
 
-          {/* Ranking badge — accent (#fed867) bg + ink-dark text for contrast */}
-          {ranking !== 'none' && (
+          <span style={{ fontSize: '30px', fontWeight: 900, color: '#100F0F', letterSpacing: '0.5px', position: 'relative', top: '-3px' }}>
+            ミッション
+          </span>
+
+          {ranking === 'true' && (
             <div
               style={{
                 display: 'flex',
-                backgroundColor: '#fed867',
+                backgroundColor: '#AD8301',
                 padding: '6px 14px',
-                borderRadius: '4px',
+                borderRadius: '6px',
                 alignItems: 'center',
                 gap: '6px',
               }}
             >
-              <TrophyIcon size={22} color="#100F0F" />
-              <span style={{ fontSize: '20px', fontWeight: 900, color: '#100F0F', letterSpacing: '0.5px' }}>
+              <TrophyIcon size={22} color="#FFFFFF" />
+              <span style={{ fontSize: '20px', fontWeight: 900, color: '#FFFFFF', letterSpacing: '0.5px' }}>
                 ランキング
               </span>
             </div>
@@ -158,9 +161,9 @@ export function MissionCardTemplate({
             <div
               style={{
                 display: 'flex',
-                backgroundColor: '#A33B24',
+                backgroundColor: '#BC5215',
                 padding: '6px 14px',
-                borderRadius: '4px',
+                borderRadius: '6px',
                 alignItems: 'center',
                 gap: '6px',
               }}
@@ -178,9 +181,9 @@ export function MissionCardTemplate({
           <div
             style={{
               display: 'flex',
-              backgroundColor: '#5e405f',
+              backgroundColor: '#5E409D',
               padding: '6px 14px',
-              borderRadius: '4px',
+              borderRadius: '6px',
               alignItems: 'center',
               gap: '6px',
             }}

@@ -16,7 +16,7 @@ export default function Home() {
   const [date, setDate] = useState('2026/05/30');
 
   // Mission-specific parameters
-  const [ranking, setRanking] = useState('none');
+  const [ranking, setRanking] = useState('false');
   const [condition, setCondition] = useState('none');
   const [capacity, setCapacity] = useState('20名');
   const [metric, setMetric] = useState('参加のみ');
@@ -36,7 +36,7 @@ export default function Home() {
       setTitle('来月の集中練習ミッション');
       setDescription('来月に向けて今から参加登録！');
       setDate('26/05/31 〜 26/06/28');
-      setRanking('none');
+      setRanking('false');
       setCondition('none');
       setCapacity('20名');
       setMetric('参加のみ');
@@ -320,9 +320,8 @@ export default function Home() {
                       }}
                       className="bg-[#FFFFFF] border-2 border-[#100F0F] text-[#100F0F] px-3 py-2 rounded text-sm outline-none focus:ring-2 focus:ring-[#e28883] cursor-pointer"
                     >
-                      <option value="none">無し</option>
-                      <option value="per_checkpoint">各CP後 (🏆)</option>
-                      <option value="final_only">最終のみ (🏆)</option>
+                      <option value="false">無し</option>
+                      <option value="true">有り (🏆)</option>
                     </select>
                   </div>
                   <div className="flex flex-col gap-2">
