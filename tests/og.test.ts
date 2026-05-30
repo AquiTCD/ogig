@@ -79,6 +79,25 @@ test('returns 200 even when title exceeds max length', async () => {
   expect(response.status).toBe(200);
 });
 
+test('stronger-a-day theme returns 200', async () => {
+  vi.stubGlobal('fetch', mockFetchOk());
+
+  const { GET } = await import('@/app/api/og/route');
+  const url = 'http://localhost:3000/api/og?theme=stronger-a-day&title=ミッション&subtitle=ゲーム名&date=2026/06/01 〜 2026/08/31';
+  const response = await GET(new Request(url));
+
+  expect(response.status).toBe(200);
+});
+
+test('unknown theme falls back to default and returns 200', async () => {
+  vi.stubGlobal('fetch', mockFetchOk());
+
+  const { GET } = await import('@/app/api/og/route');
+  const response = await GET(new Request('http://localhost:3000/api/og?theme=nonexistent&title=Test'));
+
+  expect(response.status).toBe(200);
+});
+
 test('fontPromise resets after failure so next request can retry', async () => {
   vi.stubGlobal('fetch', mockFetchFail());
   const { GET } = await import('@/app/api/og/route');

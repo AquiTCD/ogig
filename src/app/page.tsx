@@ -2,7 +2,15 @@
 
 import { useState, useEffect } from 'react';
 
+const THEMES = [
+  { value: 'default', label: 'Default' },
+  { value: 'stronger-a-day', label: 'Stronger a Day' },
+] as const;
+
+type ThemeValue = (typeof THEMES)[number]['value'];
+
 export default function Home() {
+  const [theme, setTheme] = useState<ThemeValue>('default');
   const [title, setTitle] = useState('DYNAMIC OGP GENERATOR');
   const [subtitle, setSubtitle] = useState('Vercel Edge Functions + @vercel/og');
   const [date, setDate] = useState('2026/05/30');
@@ -10,21 +18,15 @@ export default function Home() {
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // Generate OGP URL
-  const getOgpUrl = (t: string, sub: string, d: string) => {
+  const getOgpUrl = (th: ThemeValue, t: string, sub: string, d: string) => {
     if (typeof window === 'undefined') return '';
     const origin = window.location.origin;
-    const params = new URLSearchParams({
-      title: t,
-      subtitle: sub,
-      date: d,
-    });
+    const params = new URLSearchParams({ theme: th, title: t, subtitle: sub, date: d });
     return `${origin}/api/og?${params.toString()}`;
   };
 
-  // Debounce URL updates to avoid over-fetching
   useEffect(() => {
-    const newUrl = getOgpUrl(title, subtitle, date);
+    const newUrl = getOgpUrl(theme, title, subtitle, date);
     const handler = setTimeout(() => {
       if (newUrl !== debouncedUrl) {
         setDebouncedUrl(newUrl);
@@ -34,7 +36,7 @@ export default function Home() {
     }, 500);
 
     return () => clearTimeout(handler);
-  }, [title, subtitle, date, debouncedUrl]);
+  }, [theme, title, subtitle, date, debouncedUrl]);
 
   const handleCopy = async () => {
     try {
@@ -80,15 +82,32 @@ export default function Home() {
               <p className="text-xs text-zinc-500 mt-1">OGP画像に入力する内容を調整してください。</p>
             </div>
 
+            {/* Theme Selector */}
+            <div className="flex flex-col gap-2">
+              <label className="text-xs font-bold text-zinc-400 tracking-wider">THEME</label>
+              <div className="flex gap-2 flex-wrap">
+                {THEMES.map((t) => (
+                  <button
+                    key={t.value}
+                    onClick={() => { setTheme(t.value); setLoading(true); }}
+                    className={`px-4 py-2 rounded-lg text-xs font-bold border transition-all ${
+                      theme === t.value
+                        ? 'bg-red-950/40 border-red-600 text-red-300'
+                        : 'bg-zinc-950/40 border-zinc-800 text-zinc-500 hover:border-zinc-600'
+                    }`}
+                  >
+                    {t.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             {/* Input: Title */}
             <div className="flex flex-col gap-2">
               <label className="text-xs font-bold text-zinc-400 tracking-wider">TITLE</label>
               <textarea
                 value={title}
-                onChange={(e) => {
-                  setTitle(e.target.value);
-                  setLoading(true);
-                }}
+                onChange={(e) => { setTitle(e.target.value); setLoading(true); }}
                 rows={3}
                 className="bg-zinc-950/60 border border-zinc-800 focus:border-red-600 focus:ring-1 focus:ring-red-600 rounded-lg px-3 py-2 text-sm outline-none transition-all resize-none text-zinc-100"
                 placeholder="メインタイトルを入力"
@@ -101,10 +120,7 @@ export default function Home() {
               <input
                 type="text"
                 value={subtitle}
-                onChange={(e) => {
-                  setSubtitle(e.target.value);
-                  setLoading(true);
-                }}
+                onChange={(e) => { setSubtitle(e.target.value); setLoading(true); }}
                 className="bg-zinc-950/60 border border-zinc-800 focus:border-red-600 focus:ring-1 focus:ring-red-600 rounded-lg px-3 py-2 text-sm outline-none transition-all text-zinc-100"
                 placeholder="サブタイトルや説明を入力"
               />
@@ -116,10 +132,7 @@ export default function Home() {
               <input
                 type="text"
                 value={date}
-                onChange={(e) => {
-                  setDate(e.target.value);
-                  setLoading(true);
-                }}
+                onChange={(e) => { setDate(e.target.value); setLoading(true); }}
                 className="bg-zinc-950/60 border border-zinc-800 focus:border-red-600 focus:ring-1 focus:ring-red-600 rounded-lg px-3 py-2 text-sm outline-none transition-all text-zinc-100"
                 placeholder="日付を入力 (例: 2026/05/30)"
               />
@@ -192,9 +205,10 @@ export default function Home() {
               <pre className="font-mono text-[10px] bg-zinc-950/80 p-2.5 rounded border border-zinc-900 text-zinc-500 overflow-x-auto leading-relaxed">
 {`# 例: Ruby on Rails での OGP URL 組み立て
 url_params = {
-  title: @article.title,
-  subtitle: @article.category,
-  date: @article.published_at.strftime('%Y/%m/%d')
+  theme: "stronger-a-day",
+  title: @mission.title,
+  subtitle: current_game.title,
+  date: "#{@mission.start_at.strftime('%Y/%m/%d')} 〜 #{@mission.end_at.strftime('%Y/%m/%d')}"
 }
 @og_image = "https://ogig.vercel.app/api/og?#{url_params.to_query}"`}
               </pre>
