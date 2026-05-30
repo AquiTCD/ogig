@@ -3,12 +3,11 @@ export type OGParams = {
   subtitle: string;
   date: string;
   // Optional mission-specific params
-  status?: string;
   ranking?: string;
   condition?: string;
-  participants?: string;
+  capacity?: string;
   metric?: string;
-  creator?: string;
+  owner?: string;
 };
 
 export type OGTemplate = (params: OGParams) => React.ReactElement;

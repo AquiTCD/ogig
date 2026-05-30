@@ -79,11 +79,11 @@ test('returns 200 even when title exceeds max length', async () => {
   expect(response.status).toBe(200);
 });
 
-test('stronger-a-day theme returns 200', async () => {
+test('mission-card theme returns 200', async () => {
   vi.stubGlobal('fetch', mockFetchOk());
 
   const { GET } = await import('@/app/api/og/route');
-  const url = 'http://localhost:3000/api/og?theme=stronger-a-day&title=ミッション&subtitle=ゲーム名&date=2026/06/01 〜 2026/08/31';
+  const url = 'http://localhost:3000/api/og?theme=mission-card&title=ミッション&subtitle=ゲーム名&date=2026/06/01 〜 2026/08/31&capacity=20名&owner=オーナー名';
   const response = await GET(new Request(url));
 
   expect(response.status).toBe(200);

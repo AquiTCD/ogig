@@ -1,0 +1,285 @@
+import type { OGParams } from '../types';
+
+// Inline Phosphor Icons SVG definitions to avoid Satori/Edge context errors
+const UsersThreeIcon = ({ size, color }: { size: number; color: string }) => (
+  <svg width={size} height={size} viewBox="0 0 256 256" fill={color}>
+    <path d="M64.12,147.8a4,4,0,0,1-4,4.2H16a8,8,0,0,1-7.8-6.17,8.35,8.35,0,0,1,1.62-6.93A67.79,67.79,0,0,1,37,117.51a40,40,0,1,1,66.46-35.8,3.94,3.94,0,0,1-2.27,4.18A64.08,64.08,0,0,0,64,144C64,145.28,64,146.54,64.12,147.8Zm182-8.91A67.76,67.76,0,0,0,219,117.51a40,40,0,1,0-66.46-35.8,3.94,3.94,0,0,0,2.27,4.18A64.08,64.08,0,0,1,192,144c0,1.28,0,2.54-.12,3.8a4,4,0,0,0,4,4.2H240a8,8,0,0,0,7.8-6.17A8.33,8.33,0,0,0,246.17,138.89Zm-89,43.18a48,48,0,1,0-58.37,0A72.13,72.13,0,0,0,65.07,212,8,8,0,0,0,72,224H184a8,8,0,0,0,6.93-12A72.15,72.15,0,0,0,157.19,182.07Z" />
+  </svg>
+);
+
+const TrophyIcon = ({ size, color }: { size: number; color: string }) => (
+  <svg width={size} height={size} viewBox="0 0 256 256" fill={color}>
+    <path d="M232,64H208V48a8,8,0,0,0-8-8H56a8,8,0,0,0-8,8V64H24A16,16,0,0,0,8,80V96a40,40,0,0,0,40,40h3.65A80.13,80.13,0,0,0,120,191.61V216H96a8,8,0,0,0,0,16h64a8,8,0,0,0,0-16H136V191.58c31.94-3.23,58.44-25.64,68.08-55.58H208a40,40,0,0,0,40-40V80A16,16,0,0,0,232,64ZM48,120A24,24,0,0,1,24,96V80H48v32q0,4,.39,8ZM232,96a24,24,0,0,1-24,24h-.5a81.81,81.81,0,0,0,.5-8.9V80h24Z" />
+  </svg>
+);
+
+const KeyIcon = ({ size, color }: { size: number; color: string }) => (
+  <svg width={size} height={size} viewBox="0 0 256 256" fill={color}>
+    <path d="M216.57,39.43A80,80,0,0,0,83.91,120.78L28.69,176A15.86,15.86,0,0,0,24,187.31V216a16,16,0,0,0,16,16H72a8,8,0,0,0,8-8V208H96a8,8,0,0,0,8-8V184h16a8,8,0,0,0,5.66-2.34l9.56-9.57A79.73,79.73,0,0,0,160,176h.1A80,80,0,0,0,216.57,39.43ZM180,92a16,16,0,1,1,16-16A16,16,0,0,1,180,92Z" />
+  </svg>
+);
+
+const CheckCircleIcon = ({ size, color }: { size: number; color: string }) => (
+  <svg width={size} height={size} viewBox="0 0 256 256" fill={color}>
+    <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm45.66,85.66-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35a8,8,0,0,1,11.32,11.32Z" />
+  </svg>
+);
+
+const CalendarIcon = ({ size, color }: { size: number; color: string }) => (
+  <svg width={size} height={size} viewBox="0 0 256 256" fill={color}>
+    <path d="M208,28H188V24a12,12,0,0,0-24,0v4H92V24a12,12,0,0,0-24,0v4H48A20,20,0,0,0,28,48V208a20,20,0,0,0,20,20H208a20,20,0,0,0,20-20V48A20,20,0,0,0,208,28ZM68,52a12,12,0,0,0,24,0h72a12,12,0,0,0,24,0h16V76H52V52ZM52,204V100H204V204Zm60-80v56a12,12,0,0,1-24,0V143.32a12,12,0,0,1-9.37-22l16-8A12,12,0,0,1,112,124Zm61.49,33.88L163.9,168H168a12,12,0,0,1,0,24H136a12,12,0,0,1-8.71-20.25L155.45,142a4,4,0,0,0,.55-2,4,4,0,0,0-7.47-2,12,12,0,0,1-20.78-12A28,28,0,0,1,180,140a27.77,27.77,0,0,1-5.64,16.86A10.63,10.63,0,0,1,173.49,157.88Z" />
+  </svg>
+);
+
+const ChartBarIcon = ({ size, color }: { size: number; color: string }) => (
+  <svg width={size} height={size} viewBox="0 0 256 256" fill={color}>
+    <path d="M224,196h-4V40a12,12,0,0,0-12-12H152a12,12,0,0,0-12,12V76H96A12,12,0,0,0,84,88v36H48a12,12,0,0,0-12,12v60H32a12,12,0,0,0,0,24H224a12,12,0,0,0,0-24ZM164,52h32V196H164Zm-56,48h32v96H108ZM60,148H84v48H60Z" />
+  </svg>
+);
+
+export function MissionCardTemplate({
+  title,
+  subtitle,
+  date,
+  ranking = 'false',
+  condition = 'none',
+  capacity = '制限なし',
+  metric = '参加のみ',
+  owner = 'オーナー',
+}: OGParams) {
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        width: '1200px',
+        height: '630px',
+        backgroundColor: '#FFFCF0', // Flexoki paper
+        color: '#100F0F', // Flexoki ink-dark
+        fontFamily: 'Noto Sans JP',
+        position: 'relative',
+        padding: '50px 60px 50px 180px', // Shift content right of the red line
+        boxSizing: 'border-box',
+        overflow: 'hidden',
+        border: '16px solid #100F0F', // Heavy border (makes OGP itself look like a card)
+      }}
+    >
+      {/* Notebook red vertical margin line */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          bottom: 0,
+          left: '140px',
+          width: '3px',
+          backgroundColor: '#e28883', // Flexoki action (coral)
+          opacity: 0.6,
+          display: 'flex',
+        }}
+      />
+
+      {/* Notebook ruled horizontal lines (background) */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          bottom: 0,
+          left: 0,
+          right: 0,
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          padding: '100px 0 80px 0',
+          opacity: 0.25,
+          pointerEvents: 'none',
+        }}
+      >
+        <div style={{ width: '100%', height: '1.5px', backgroundColor: '#E6E4D9' }} />
+        <div style={{ width: '100%', height: '1.5px', backgroundColor: '#E6E4D9' }} />
+        <div style={{ width: '100%', height: '1.5px', backgroundColor: '#E6E4D9' }} />
+        <div style={{ width: '100%', height: '1.5px', backgroundColor: '#E6E4D9' }} />
+        <div style={{ width: '100%', height: '1.5px', backgroundColor: '#E6E4D9' }} />
+        <div style={{ width: '100%', height: '1.5px', backgroundColor: '#E6E4D9' }} />
+      </div>
+
+      {/* Top Header: Brand name, Logo and Capacity */}
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          width: '100%',
+          marginBottom: '24px',
+        }}
+      >
+        {/* Left: Brand name + logo */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <span style={{ fontSize: '22px', fontWeight: 900, color: '#6F6E69', letterSpacing: '2px' }}>
+            STRONGER A DAY
+          </span>
+          <svg viewBox="0 0 5315 1418" style={{ width: '120px', height: '32px', fill: '#100F0F' }}>
+            <g transform="matrix(1,0,0,1,118.11,0)">
+              <path d="M0,1299.21L1181.1,1299.21L1181.1,909.449L389.764,909.449L389.764,708.661L1181.1,708.661L1181.1,318.898L389.764,318.898L389.764,118.11L0,118.11L0,1299.21Z" />
+            </g>
+            <g transform="matrix(1,0,0,1,2722.44,-1299.21)">
+              <path d="M1181.1,2598.43L1181.1,1417.32L909.449,1417.32L909.449,2208.66L0,2208.66L0,2598.43L1181.1,2598.43ZM265.748,1417.32L-5.906,1417.32L-5.906,2025.59L265.748,2025.59L265.748,1417.32ZM726.378,1417.32L454.724,1417.32L454.724,2025.59L726.378,2025.59L726.378,1417.32Z" />
+            </g>
+            <g transform="matrix(1,0,0,1,2722.44,-1299.21)">
+              <path d="M2480.32,2598.43L2480.32,1417.32L1299.21,1417.32L1299.21,1688.98L2090.55,1688.98L2090.55,1872.05L1299.21,1872.05L1299.21,2143.7L2090.55,2143.7L2090.55,2326.77L1299.21,2326.77L1299.21,2598.43L2480.32,2598.43Z" />
+            </g>
+            <g transform="matrix(1,0,0,1,118.11,0)">
+              <path d="M1688.98,513.78L1688.98,118.11L1299.21,118.11L1299.21,1299.21L1688.98,1299.21L1688.98,903.543L2480.32,903.543L2480.32,513.78L1688.98,513.78Z" />
+            </g>
+          </svg>
+        </div>
+
+        {/* Right: Capacity (Using Inline UsersThreeIcon) */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <UsersThreeIcon size={36} color="#100F0F" />
+          <span style={{ fontSize: '32px', fontWeight: 900, color: '#100F0F' }}>
+            定員 {capacity}
+          </span>
+        </div>
+      </div>
+
+      {/* Badges Row (Trophy & Conditions - Font enlarged for mobile readability) */}
+      <div style={{ display: 'flex', gap: '12px', marginBottom: '16px' }}>
+        {ranking === 'true' && (
+          <div
+            style={{
+              display: 'flex',
+              backgroundColor: '#ad8300', // Flexoki yellow
+              padding: '8px 18px',
+              borderRadius: '6px',
+              alignItems: 'center',
+              gap: '8px',
+            }}
+          >
+            <TrophyIcon size={26} color="#FFFFFF" />
+            <span style={{ fontSize: '24px', fontWeight: 900, color: '#FFFFFF', letterSpacing: '1px' }}>
+              ランキング
+            </span>
+          </div>
+        )}
+
+        {condition !== 'none' && (
+          <div
+            style={{
+              display: 'flex',
+              backgroundColor: '#5e405f', // Flexoki purple
+              padding: '8px 18px',
+              borderRadius: '6px',
+              alignItems: 'center',
+              gap: '8px',
+            }}
+          >
+            {condition === 'invite' ? (
+              <KeyIcon size={26} color="#FFFFFF" />
+            ) : (
+              <CheckCircleIcon size={26} color="#FFFFFF" />
+            )}
+            <span style={{ fontSize: '24px', fontWeight: 900, color: '#FFFFFF', letterSpacing: '1px' }}>
+              {condition === 'invite' ? '招待制' : '承認制'}
+            </span>
+          </div>
+        )}
+      </div>
+
+      {/* Main Content Area (Highly expanded for OGP readability on X) */}
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          flexGrow: 1,
+          justifyContent: 'center',
+          marginBottom: '24px',
+        }}
+      >
+        {/* Title (Huge font size for mobile timeline) */}
+        <h1
+          style={{
+            fontSize: '80px',
+            fontWeight: 900,
+            lineHeight: '1.2',
+            color: '#100F0F',
+            margin: 0,
+            wordBreak: 'break-all',
+          }}
+        >
+          {title}
+        </h1>
+
+        {/* Subtitle / Description */}
+        {subtitle && (
+          <p
+            style={{
+              fontSize: '36px',
+              color: '#6F6E69',
+              margin: '16px 0 0 0',
+              fontWeight: 500,
+              lineHeight: '1.35',
+            }}
+          >
+            {subtitle}
+          </p>
+        )}
+      </div>
+
+      {/* Bottom Footer Section (Divider is heavy rule line) */}
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'flex-end',
+          borderTop: '5px solid #100F0F',
+          paddingTop: '25px',
+        }}
+      >
+        {/* Badges: Period & Metric */}
+        <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+          {/* Period Badge (Black background with white text) */}
+          <div
+            style={{
+              display: 'flex',
+              backgroundColor: '#100F0F',
+              padding: '8px 18px',
+              borderRadius: '6px',
+              alignItems: 'center',
+              gap: '10px',
+            }}
+          >
+            <CalendarIcon size={30} color="#FFFFFF" />
+            <span style={{ fontSize: '32px', fontWeight: 900, color: '#FFFFFF', letterSpacing: '0.5px' }}>
+              {date}
+            </span>
+          </div>
+
+          {/* Metric Badge (White background with heavy black borders) */}
+          <div
+            style={{
+              display: 'flex',
+              border: '4px solid #100F0F',
+              backgroundColor: '#FFFFFF',
+              padding: '6px 16px',
+              borderRadius: '6px',
+              alignItems: 'center',
+              gap: '8px',
+            }}
+          >
+            <ChartBarIcon size={30} color="#100F0F" />
+            <span style={{ fontSize: '32px', fontWeight: 900, color: '#100F0F' }}>
+              {metric}
+            </span>
+          </div>
+        </div>
+
+        {/* Owner details */}
+        {owner && (
+          <span style={{ fontSize: '32px', fontWeight: 900, color: '#100F0F' }}>
+            by @{owner}
+          </span>
+        )}
+      </div>
+    </div>
+  );
+}

@@ -1,6 +1,6 @@
 import { ImageResponse } from '@vercel/og';
 import { DefaultTemplate } from './templates/default';
-import { StrongerADayTemplate } from './templates/stronger-a-day';
+import { MissionCardTemplate } from './templates/mission-card';
 import type { OGTemplate } from './types';
 
 export const runtime = 'edge';
@@ -9,7 +9,7 @@ const MAX_LENGTHS = { title: 100, subtitle: 80, date: 20 };
 
 const TEMPLATES: Record<string, OGTemplate> = {
   default: DefaultTemplate,
-  'stronger-a-day': StrongerADayTemplate,
+  'mission-card': MissionCardTemplate,
 };
 
 let fontPromise: Promise<ArrayBuffer> | null = null;
@@ -38,12 +38,11 @@ export async function GET(request: Request) {
     const subtitle = (searchParams.get('subtitle') || 'Sub Title').slice(0, MAX_LENGTHS.subtitle);
     const date = (searchParams.get('date') || 'YYYY/MM/DD').slice(0, MAX_LENGTHS.date);
 
-    const status = searchParams.get('status') || undefined;
     const ranking = searchParams.get('ranking') || undefined;
     const condition = searchParams.get('condition') || undefined;
-    const participants = searchParams.get('participants') || undefined;
+    const capacity = searchParams.get('capacity') || undefined;
     const metric = searchParams.get('metric') || undefined;
-    const creator = searchParams.get('creator') || undefined;
+    const owner = searchParams.get('owner') || undefined;
 
     const Template = TEMPLATES[theme] ?? TEMPLATES.default;
 
@@ -60,12 +59,11 @@ export async function GET(request: Request) {
         title={title}
         subtitle={subtitle}
         date={date}
-        status={status}
         ranking={ranking}
         condition={condition}
-        participants={participants}
+        capacity={capacity}
         metric={metric}
-        creator={creator}
+        owner={owner}
       />, {
       width: 1200,
       height: 630,
