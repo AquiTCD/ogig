@@ -37,6 +37,12 @@ const ChartBarIcon = ({ size, color }: { size: number; color: string }) => (
   </svg>
 );
 
+const XCircleIcon = ({ size, color }: { size: number; color: string }) => (
+  <svg width={size} height={size} viewBox="0 0 256 256" fill={color}>
+    <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm37.66,130.34a8,8,0,0,1-11.32,11.32L128,139.31l-26.34,26.35a8,8,0,0,1-11.32-11.32L116.69,128,90.34,101.66a8,8,0,0,1,11.32-11.32L128,116.69l26.34-26.35a8,8,0,0,1,11.32,11.32L139.31,128Z" />
+  </svg>
+);
+
 // Dynamic font size logic for title to prevent overflow on mobile OGP
 const getTitleFontSize = (titleText: string) => {
   const len = titleText.length;
@@ -54,6 +60,8 @@ export function MissionCardTemplate({
   condition = 'none',
   capacity = '制限なし',
   metric = '参加のみ',
+  game,
+  elimination = 'false',
 }: OGParams) {
   return (
     <div
@@ -86,7 +94,7 @@ export function MissionCardTemplate({
         }}
       />
 
-      {/* Notebook ruled horizontal lines (background) */}
+      {/* Notebook ruled horizontal lines (background - darkened to make them clearly visible) */}
       <div
         style={{
           position: 'absolute',
@@ -97,20 +105,20 @@ export function MissionCardTemplate({
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
-          padding: '100px 0 80px 0',
-          opacity: 0.25,
+          padding: '110px 0 90px 0',
+          opacity: 0.65,
           pointerEvents: 'none',
         }}
       >
-        <div style={{ width: '100%', height: '1.5px', backgroundColor: '#E6E4D9' }} />
-        <div style={{ width: '100%', height: '1.5px', backgroundColor: '#E6E4D9' }} />
-        <div style={{ width: '100%', height: '1.5px', backgroundColor: '#E6E4D9' }} />
-        <div style={{ width: '100%', height: '1.5px', backgroundColor: '#E6E4D9' }} />
-        <div style={{ width: '100%', height: '1.5px', backgroundColor: '#E6E4D9' }} />
-        <div style={{ width: '100%', height: '1.5px', backgroundColor: '#E6E4D9' }} />
+        <div style={{ width: '100%', height: '1.5px', backgroundColor: '#DAD8CE' }} />
+        <div style={{ width: '100%', height: '1.5px', backgroundColor: '#DAD8CE' }} />
+        <div style={{ width: '100%', height: '1.5px', backgroundColor: '#DAD8CE' }} />
+        <div style={{ width: '100%', height: '1.5px', backgroundColor: '#DAD8CE' }} />
+        <div style={{ width: '100%', height: '1.5px', backgroundColor: '#DAD8CE' }} />
+        <div style={{ width: '100%', height: '1.5px', backgroundColor: '#DAD8CE' }} />
       </div>
 
-      {/* Row 1: Header (Hitotsuyo Logo & Condition Badge) */}
+      {/* Row 1: Header (Hitotsuyo Logo, Ranking & Elimination Badges) */}
       <div
         style={{
           display: 'flex',
@@ -120,9 +128,9 @@ export function MissionCardTemplate({
           marginBottom: '16px',
         }}
       >
-        {/* Left: Brand logo & left badges (e.g. Ranking) */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <svg viewBox="0 0 5315 1418" style={{ width: '150px', height: '40px', fill: '#100F0F' }}>
+        {/* Left: Brand logo & left badges (Ranking & Elimination) */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <svg viewBox="0 0 5315 1418" style={{ width: '150px', height: '40px', fill: '#100F0F', marginRight: '6px' }}>
             <g transform="matrix(1,0,0,1,118.11,0)">
               <path d="M0,1299.21L1181.1,1299.21L1181.1,909.449L389.764,909.449L389.764,708.661L1181.1,708.661L1181.1,318.898L389.764,318.898L389.764,118.11L0,118.11L0,1299.21Z" />
             </g>
@@ -137,6 +145,7 @@ export function MissionCardTemplate({
             </g>
           </svg>
 
+          {/* Ranking Badge */}
           {ranking === 'true' && (
             <div
               style={{
@@ -151,6 +160,25 @@ export function MissionCardTemplate({
               <TrophyIcon size={22} color="#FFFFFF" />
               <span style={{ fontSize: '20px', fontWeight: 900, color: '#FFFFFF', letterSpacing: '0.5px' }}>
                 ランキング
+              </span>
+            </div>
+          )}
+
+          {/* Elimination Badge */}
+          {elimination === 'true' && (
+            <div
+              style={{
+                display: 'flex',
+                backgroundColor: '#A33B24', // Flexoki orange (Elimination)
+                padding: '6px 14px',
+                borderRadius: '6px',
+                alignItems: 'center',
+                gap: '6px',
+              }}
+            >
+              <XCircleIcon size={22} color="#FFFFFF" />
+              <span style={{ fontSize: '20px', fontWeight: 900, color: '#FFFFFF', letterSpacing: '0.5px' }}>
+                脱落あり
               </span>
             </div>
           )}
@@ -180,7 +208,7 @@ export function MissionCardTemplate({
         )}
       </div>
 
-      {/* Row 2: Ruled Period & Capacity info (Under the condition badge on the right) */}
+      {/* Row 2: Ruled Period & Capacity info */}
       <div
         style={{
           display: 'flex',
@@ -207,7 +235,7 @@ export function MissionCardTemplate({
           </span>
         </div>
 
-        {/* Right: Capacity (Aligns underneath the condition badge on the right) */}
+        {/* Right: Capacity */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <UsersThreeIcon size={32} color="#100F0F" />
           <span style={{ fontSize: '28px', fontWeight: 900, color: '#100F0F' }}>
@@ -226,6 +254,22 @@ export function MissionCardTemplate({
           marginBottom: '20px',
         }}
       >
+        {/* Game Title (Positioned directly above the Mission Title) */}
+        {game && (
+          <span
+            style={{
+              fontSize: '28px',
+              fontWeight: 900,
+              color: '#6F6E69', // Flexoki ink-light
+              textTransform: 'uppercase',
+              letterSpacing: '1.5px',
+              marginBottom: '10px',
+            }}
+          >
+            {game}
+          </span>
+        )}
+
         {/* Title (Huge font size for mobile timeline, dynamically scaled) */}
         <h1
           style={{

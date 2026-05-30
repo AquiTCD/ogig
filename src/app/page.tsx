@@ -20,6 +20,8 @@ export default function Home() {
   const [condition, setCondition] = useState('none');
   const [capacity, setCapacity] = useState('20名');
   const [metric, setMetric] = useState('参加のみ');
+  const [game, setGame] = useState('GUILTY GEAR -STRIVE-');
+  const [elimination, setElimination] = useState('false');
 
   const [debouncedUrl, setDebouncedUrl] = useState('');
   const [copied, setCopied] = useState(false);
@@ -37,6 +39,8 @@ export default function Home() {
       setCondition('none');
       setCapacity('20名');
       setMetric('参加のみ');
+      setGame('GUILTY GEAR -STRIVE-');
+      setElimination('false');
     } else {
       setTitle('DYNAMIC OGP GENERATOR');
       setSubtitle('Vercel Edge Functions + @vercel/og');
@@ -52,7 +56,9 @@ export default function Home() {
     rn: string,
     co: string,
     pa: string,
-    me: string
+    me: string,
+    gm: string,
+    el: string
   ) => {
     if (typeof window === 'undefined') return '';
     const origin = window.location.origin;
@@ -63,12 +69,14 @@ export default function Home() {
       params.append('condition', co);
       params.append('capacity', pa);
       params.append('metric', me);
+      params.append('game', gm);
+      params.append('elimination', el);
     }
     return `${origin}/api/og?${params.toString()}`;
   };
 
   useEffect(() => {
-    const newUrl = getOgpUrl(theme, title, subtitle, date, ranking, condition, capacity, metric);
+    const newUrl = getOgpUrl(theme, title, subtitle, date, ranking, condition, capacity, metric, game, elimination);
     const handler = setTimeout(() => {
       if (newUrl !== debouncedUrl) {
         setDebouncedUrl(newUrl);
@@ -78,7 +86,7 @@ export default function Home() {
     }, 500);
 
     return () => clearTimeout(handler);
-  }, [theme, title, subtitle, date, ranking, condition, capacity, metric, debouncedUrl]);
+  }, [theme, title, subtitle, date, ranking, condition, capacity, metric, game, elimination, debouncedUrl]);
 
   const handleCopy = async () => {
     try {
@@ -329,6 +337,37 @@ export default function Home() {
                   </div>
                 </div>
 
+                {/* Game Title & Elimination rule */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="flex flex-col gap-2">
+                    <label className="text-xs font-bold text-[#100F0F] tracking-wider">GAME TITLE</label>
+                    <input
+                      type="text"
+                      value={game}
+                      onChange={(e) => {
+                        setGame(e.target.value);
+                        setLoading(true);
+                      }}
+                      className="bg-[#FFFFFF] border-2 border-[#100F0F] text-[#100F0F] px-3 py-2 rounded text-sm outline-none focus:ring-2 focus:ring-[#e28883]"
+                      placeholder="例: GUILTY GEAR -STRIVE-"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <label className="text-xs font-bold text-[#100F0F] tracking-wider">ELIMINATION</label>
+                    <select
+                      value={elimination}
+                      onChange={(e) => {
+                        setElimination(e.target.value);
+                        setLoading(true);
+                      }}
+                      className="bg-[#FFFFFF] border-2 border-[#100F0F] text-[#100F0F] px-3 py-2 rounded text-sm outline-none focus:ring-2 focus:ring-[#e28883] cursor-pointer"
+                    >
+                      <option value="false">無し</option>
+                      <option value="true">有り (❌)</option>
+                    </select>
+                  </div>
+                </div>
+
                 {/* Capacity & Metric */}
                 <div className="grid grid-cols-2 gap-4">
                   <div className="flex flex-col gap-2">
@@ -493,8 +532,10 @@ url_params = {
   theme: "mission-card",
   title: @mission.title,
   subtitle: @mission.description, # カード内説明文
+  game: current_game.title, # ゲーム名
   date: "#{@mission.start_at.strftime('%y/%m/%d')} 〜 #{@mission.end_at.strftime('%y/%m/%d')}",
   ranking: @mission.ranking_display != "none" ? "true" : "false",
+  elimination: @mission.elimination_rule.present? ? "true" : "false",
   condition: @mission.invite_only? ? "invite" : (@mission.approval_required? ? "approval" : "none"),
   capacity: @mission.capacity.present? ? "#{@mission.capacity}名" : "制限なし",
   metric: "#{@mission.metric_label} 累計"

@@ -43,6 +43,8 @@ export async function GET(request: Request) {
     const capacity = searchParams.get('capacity') || undefined;
     const metric = searchParams.get('metric') || undefined;
     const owner = searchParams.get('owner') || undefined;
+    const game = searchParams.get('game') || undefined;
+    const elimination = searchParams.get('elimination') || undefined;
 
     const Template = TEMPLATES[theme] ?? TEMPLATES.default;
 
@@ -64,6 +66,8 @@ export async function GET(request: Request) {
         capacity={capacity}
         metric={metric}
         owner={owner}
+        game={game}
+        elimination={elimination}
       />, {
       width: 1200,
       height: 630,

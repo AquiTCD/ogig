@@ -8,6 +8,8 @@ export type OGParams = {
   capacity?: string;
   metric?: string;
   owner?: string;
+  game?: string;
+  elimination?: string;
 };
 
 export type OGTemplate = (params: OGParams) => React.ReactElement;
