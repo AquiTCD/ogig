@@ -43,7 +43,7 @@ test('returns 200 and image/png for valid params', async () => {
   vi.stubGlobal('fetch', mockFetchOk());
 
   const { GET } = await import('@/app/api/og/route');
-  const url = 'http://localhost:3000/api/og?title=Test%20Title&subtitle=Test%20Subtitle&date=2026/05/30';
+  const url = 'http://localhost:3000/api/og?title=Test%20Title&description=Test%20Description&date=2026/05/30';
   const response = await GET(new Request(url));
 
   expect(response.status).toBe(200);
@@ -75,6 +75,25 @@ test('returns 200 even when title exceeds max length', async () => {
   const { GET } = await import('@/app/api/og/route');
   const longTitle = 'あ'.repeat(200);
   const response = await GET(new Request(`http://localhost:3000/api/og?title=${encodeURIComponent(longTitle)}`));
+
+  expect(response.status).toBe(200);
+});
+
+test('mission-card theme returns 200', async () => {
+  vi.stubGlobal('fetch', mockFetchOk());
+
+  const { GET } = await import('@/app/api/og/route');
+  const url = 'http://localhost:3000/api/og?theme=mission-card&title=ミッション&game=GGST&elimination=true&ranking=per_checkpoint&description=ゲーム名&date=2026/06/01 〜 2026/08/31&capacity=20名&owner=テストオーナー';
+  const response = await GET(new Request(url));
+
+  expect(response.status).toBe(200);
+});
+
+test('unknown theme falls back to default and returns 200', async () => {
+  vi.stubGlobal('fetch', mockFetchOk());
+
+  const { GET } = await import('@/app/api/og/route');
+  const response = await GET(new Request('http://localhost:3000/api/og?theme=nonexistent&title=Test'));
 
   expect(response.status).toBe(200);
 });
