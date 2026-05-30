@@ -43,25 +43,25 @@ const XCircleIcon = ({ size, color }: { size: number; color: string }) => (
   </svg>
 );
 
-// Dynamic font size logic for title to prevent overflow on mobile OGP
 const getTitleFontSize = (titleText: string) => {
   const len = titleText.length;
   if (len > 35) return '44px';
   if (len > 25) return '52px';
   if (len > 15) return '60px';
-  return '68px'; // Default slightly smaller than 80px for balanced look
+  return '68px';
 };
 
 export function MissionCardTemplate({
   title,
   description,
   date,
-  ranking = 'false',
+  ranking = 'none',
   condition = 'none',
   capacity = '制限なし',
   metric = '参加のみ',
   game,
   elimination = 'false',
+  owner,
 }: OGParams) {
   return (
     <div
@@ -70,16 +70,31 @@ export function MissionCardTemplate({
         flexDirection: 'column',
         width: '1200px',
         height: '630px',
-        backgroundColor: '#FFFCF0', // Flexoki paper
-        color: '#100F0F', // Flexoki ink-dark
+        backgroundColor: '#FFFCF0',
+        color: '#100F0F',
         fontFamily: 'Noto Sans JP',
         position: 'relative',
-        padding: '40px 50px 40px 180px', // Shift content right of the red line
+        padding: '40px 50px 40px 180px',
         boxSizing: 'border-box',
         overflow: 'hidden',
-        border: '16px solid #100F0F', // Heavy border (makes OGP itself look like a card)
+        border: '8px solid #100F0F',
       }}
     >
+      {/* Horizontal ruled lines (notebook motif) */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          backgroundImage: 'linear-gradient(to bottom, transparent 39px, #DAD8CE 39px, #DAD8CE 40px)',
+          backgroundSize: '100% 40px',
+          opacity: 0.35,
+          display: 'flex',
+        }}
+      />
+
       {/* Notebook red vertical margin line */}
       <div
         style={{
@@ -88,13 +103,13 @@ export function MissionCardTemplate({
           bottom: 0,
           left: '140px',
           width: '3px',
-          backgroundColor: '#e28883', // Flexoki action (coral)
+          backgroundColor: '#e28883',
           opacity: 0.6,
           display: 'flex',
         }}
       />
 
-      {/* Row 1: Header (Hitotsuyo Logo, Ranking & Elimination Badges) */}
+      {/* Row 1: Header (Logo, Ranking & Elimination Badges) */}
       <div
         style={{
           display: 'flex',
@@ -104,7 +119,6 @@ export function MissionCardTemplate({
           marginBottom: '16px',
         }}
       >
-        {/* Left: Brand logo & left badges (Ranking & Elimination) */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <svg viewBox="0 0 5315 1418" style={{ width: '150px', height: '40px', fill: '#100F0F', marginRight: '6px' }}>
             <g transform="matrix(1,0,0,1,118.11,0)">
@@ -121,19 +135,20 @@ export function MissionCardTemplate({
             </g>
           </svg>
 
-          {ranking === 'true' && (
+          {/* Ranking badge — accent (#fed867) bg + ink-dark text for contrast */}
+          {ranking !== 'none' && (
             <div
               style={{
                 display: 'flex',
-                backgroundColor: '#ad8300', // Flexoki yellow
+                backgroundColor: '#fed867',
                 padding: '6px 14px',
-                borderRadius: '6px',
+                borderRadius: '4px',
                 alignItems: 'center',
                 gap: '6px',
               }}
             >
-              <TrophyIcon size={22} color="#FFFFFF" />
-              <span style={{ fontSize: '20px', fontWeight: 900, color: '#FFFFFF', letterSpacing: '0.5px' }}>
+              <TrophyIcon size={22} color="#100F0F" />
+              <span style={{ fontSize: '20px', fontWeight: 900, color: '#100F0F', letterSpacing: '0.5px' }}>
                 ランキング
               </span>
             </div>
@@ -143,9 +158,9 @@ export function MissionCardTemplate({
             <div
               style={{
                 display: 'flex',
-                backgroundColor: '#A33B24', // Flexoki orange (Elimination)
+                backgroundColor: '#A33B24',
                 padding: '6px 14px',
-                borderRadius: '6px',
+                borderRadius: '4px',
                 alignItems: 'center',
                 gap: '6px',
               }}
@@ -158,14 +173,14 @@ export function MissionCardTemplate({
           )}
         </div>
 
-        {/* Right: Condition Badge (招待制 / 承認制) */}
+        {/* Condition Badge */}
         {condition !== 'none' && (
           <div
             style={{
               display: 'flex',
-              backgroundColor: '#5e405f', // Flexoki purple
+              backgroundColor: '#5e405f',
               padding: '6px 14px',
-              borderRadius: '6px',
+              borderRadius: '4px',
               alignItems: 'center',
               gap: '6px',
             }}
@@ -182,7 +197,7 @@ export function MissionCardTemplate({
         )}
       </div>
 
-      {/* Row 2: Ruled Period & Capacity info */}
+      {/* Row 2: Period & Capacity */}
       <div
         style={{
           display: 'flex',
@@ -192,13 +207,12 @@ export function MissionCardTemplate({
           marginBottom: '20px',
         }}
       >
-        {/* Left: Period Badge (Black background with white text) */}
         <div
           style={{
             display: 'flex',
             backgroundColor: '#100F0F',
             padding: '8px 16px',
-            borderRadius: '6px',
+            borderRadius: '4px',
             alignItems: 'center',
             gap: '8px',
           }}
@@ -209,7 +223,6 @@ export function MissionCardTemplate({
           </span>
         </div>
 
-        {/* Right: Capacity */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <UsersThreeIcon size={32} color="#100F0F" />
           <span style={{ fontSize: '28px', fontWeight: 900, color: '#100F0F' }}>
@@ -218,7 +231,7 @@ export function MissionCardTemplate({
         </div>
       </div>
 
-      {/* Row 3: Heavy Divider Line between metadata and main content */}
+      {/* Heavy divider */}
       <div
         style={{
           width: '100%',
@@ -229,7 +242,7 @@ export function MissionCardTemplate({
         }}
       />
 
-      {/* Main Content Area (Highly expanded for OGP readability on X) */}
+      {/* Main Content */}
       <div
         style={{
           display: 'flex',
@@ -239,23 +252,20 @@ export function MissionCardTemplate({
           marginBottom: '24px',
         }}
       >
-        {/* Game Title (Positioned directly above the Mission Title - enlarged and darkened) */}
         {game && (
           <span
             style={{
               fontSize: '36px',
               fontWeight: 900,
-              color: '#100F0F', // Flexoki ink-dark (fully dark)
-              textTransform: 'uppercase',
+              color: '#100F0F',
               letterSpacing: '1.5px',
               marginBottom: '12px',
             }}
           >
-            {game}
+            {game.toUpperCase()}
           </span>
         )}
 
-        {/* Title (Huge font size for mobile timeline, dynamically scaled) */}
         <h1
           style={{
             fontSize: getTitleFontSize(title),
@@ -269,7 +279,6 @@ export function MissionCardTemplate({
           {title}
         </h1>
 
-        {/* Description */}
         {description && (
           <p
             style={{
@@ -285,7 +294,7 @@ export function MissionCardTemplate({
         )}
       </div>
 
-      {/* Bottom Footer Section (Divider is heavy rule line) */}
+      {/* Footer */}
       <div
         style={{
           display: 'flex',
@@ -295,14 +304,14 @@ export function MissionCardTemplate({
           paddingTop: '20px',
         }}
       >
-        {/* Metric Badge (White background with heavy black borders) */}
+        {/* Metric Badge */}
         <div
           style={{
             display: 'flex',
             border: '3px solid #100F0F',
             backgroundColor: '#FFFFFF',
             padding: '4px 12px',
-            borderRadius: '6px',
+            borderRadius: '4px',
             alignItems: 'center',
             gap: '6px',
           }}
@@ -312,8 +321,13 @@ export function MissionCardTemplate({
             {metric}
           </span>
         </div>
-        
-        {/* Right side is intentionally empty as Owner details have been removed */}
+
+        {/* Owner */}
+        {owner && (
+          <span style={{ fontSize: '22px', fontWeight: 700, color: '#6F6E69' }}>
+            主催: {owner}
+          </span>
+        )}
       </div>
     </div>
   );

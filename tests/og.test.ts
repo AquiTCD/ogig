@@ -83,7 +83,7 @@ test('mission-card theme returns 200', async () => {
   vi.stubGlobal('fetch', mockFetchOk());
 
   const { GET } = await import('@/app/api/og/route');
-  const url = 'http://localhost:3000/api/og?theme=mission-card&title=ミッション&game=GGST&elimination=true&description=ゲーム名&date=2026/06/01 〜 2026/08/31&capacity=20名';
+  const url = 'http://localhost:3000/api/og?theme=mission-card&title=ミッション&game=GGST&elimination=true&ranking=per_checkpoint&description=ゲーム名&date=2026/06/01 〜 2026/08/31&capacity=20名&owner=テストオーナー';
   const response = await GET(new Request(url));
 
   expect(response.status).toBe(200);

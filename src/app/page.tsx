@@ -16,12 +16,13 @@ export default function Home() {
   const [date, setDate] = useState('2026/05/30');
 
   // Mission-specific parameters
-  const [ranking, setRanking] = useState('false');
+  const [ranking, setRanking] = useState('none');
   const [condition, setCondition] = useState('none');
   const [capacity, setCapacity] = useState('20名');
   const [metric, setMetric] = useState('参加のみ');
   const [game, setGame] = useState('GUILTY GEAR -STRIVE-');
   const [elimination, setElimination] = useState('false');
+  const [owner, setOwner] = useState('デブユーザー');
 
   const [debouncedUrl, setDebouncedUrl] = useState('');
   const [copied, setCopied] = useState(false);
@@ -35,12 +36,13 @@ export default function Home() {
       setTitle('来月の集中練習ミッション');
       setDescription('来月に向けて今から参加登録！');
       setDate('26/05/31 〜 26/06/28');
-      setRanking('false');
+      setRanking('none');
       setCondition('none');
       setCapacity('20名');
       setMetric('参加のみ');
       setGame('GUILTY GEAR -STRIVE-');
       setElimination('false');
+      setOwner('デブユーザー');
     } else {
       setTitle('DYNAMIC OGP GENERATOR');
       setDescription('Vercel Edge Functions + @vercel/og');
@@ -58,12 +60,13 @@ export default function Home() {
     pa: string,
     me: string,
     gm: string,
-    el: string
+    el: string,
+    ow: string
   ) => {
     if (typeof window === 'undefined') return '';
     const origin = window.location.origin;
     const params = new URLSearchParams({ theme: th, title: t, description: desc, date: d });
-    
+
     if (th === 'mission-card') {
       params.append('ranking', rn);
       params.append('condition', co);
@@ -71,12 +74,13 @@ export default function Home() {
       params.append('metric', me);
       params.append('game', gm);
       params.append('elimination', el);
+      if (ow) params.append('owner', ow);
     }
     return `${origin}/api/og?${params.toString()}`;
   };
 
   useEffect(() => {
-    const newUrl = getOgpUrl(theme, title, description, date, ranking, condition, capacity, metric, game, elimination);
+    const newUrl = getOgpUrl(theme, title, description, date, ranking, condition, capacity, metric, game, elimination, owner);
     const handler = setTimeout(() => {
       if (newUrl !== debouncedUrl) {
         setDebouncedUrl(newUrl);
@@ -86,7 +90,7 @@ export default function Home() {
     }, 500);
 
     return () => clearTimeout(handler);
-  }, [theme, title, description, date, ranking, condition, capacity, metric, game, elimination, debouncedUrl]);
+  }, [theme, title, description, date, ranking, condition, capacity, metric, game, elimination, owner, debouncedUrl]);
 
   const handleCopy = async () => {
     try {
@@ -316,8 +320,9 @@ export default function Home() {
                       }}
                       className="bg-[#FFFFFF] border-2 border-[#100F0F] text-[#100F0F] px-3 py-2 rounded text-sm outline-none focus:ring-2 focus:ring-[#e28883] cursor-pointer"
                     >
-                      <option value="false">無し</option>
-                      <option value="true">有り (🏆)</option>
+                      <option value="none">無し</option>
+                      <option value="per_checkpoint">各CP後 (🏆)</option>
+                      <option value="final_only">最終のみ (🏆)</option>
                     </select>
                   </div>
                   <div className="flex flex-col gap-2">
@@ -396,6 +401,21 @@ export default function Home() {
                       placeholder="例: 対戦本数 累計"
                     />
                   </div>
+                </div>
+
+                {/* Owner */}
+                <div className="flex flex-col gap-2">
+                  <label className="text-xs font-bold text-[#100F0F] tracking-wider">OWNER</label>
+                  <input
+                    type="text"
+                    value={owner}
+                    onChange={(e) => {
+                      setOwner(e.target.value);
+                      setLoading(true);
+                    }}
+                    className="bg-[#FFFFFF] border-2 border-[#100F0F] text-[#100F0F] px-3 py-2 rounded text-sm outline-none focus:ring-2 focus:ring-[#e28883]"
+                    placeholder="例: オーナー名"
+                  />
                 </div>
 
               </div>
