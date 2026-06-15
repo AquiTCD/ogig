@@ -12,6 +12,11 @@ export type OGParams = {
   elimination?: string;
   comment?: string;
   training?: string;
+  // af-specific params
+  wpm?: string;
+  acc?: string;
+  azik?: string;
+  rank?: string;
   // Runtime origin for image URLs
   imageBaseUrl?: string;
 };

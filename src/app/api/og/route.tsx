@@ -65,6 +65,10 @@ export async function GET(request: Request) {
     const elimination = searchParams.get('elimination') || undefined;
     const comment = searchParams.get('comment') || undefined;
     const training = searchParams.get('training') || undefined;
+    const wpm = searchParams.get('wpm') || undefined;
+    const acc = searchParams.get('acc') || undefined;
+    const azik = searchParams.get('azik') || undefined;
+    const rank = searchParams.get('rank') || undefined;
 
     const Template = TEMPLATES[theme] ?? TEMPLATES.default;
 
@@ -94,6 +98,10 @@ export async function GET(request: Request) {
         elimination={elimination}
         comment={comment}
         training={training}
+        wpm={wpm}
+        acc={acc}
+        azik={azik}
+        rank={rank}
         imageBaseUrl={origin}
       />, {
       width: 1200,

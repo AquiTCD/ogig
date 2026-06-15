@@ -93,7 +93,7 @@ test('af theme returns 200 with all parameters', async () => {
   vi.stubGlobal('fetch', mockFetchOk());
 
   const { GET } = await import('@/app/api/og/route');
-  const url = 'http://localhost:3000/api/og?theme=af&title=羅生門&metric=320&capacity=98.5&condition=87&ranking=S&comment=マジ神タイピングじゃん！';
+  const url = 'http://localhost:3000/api/og?theme=af&title=羅生門&wpm=320&acc=98.5&azik=87&rank=PERFECT&comment=マジ神タイピングじゃん！';
   const response = await GET(new Request(url));
 
   expect(response.status).toBe(200);

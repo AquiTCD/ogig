@@ -6,20 +6,20 @@ const GREEN = '#22c55e';
 const GREEN_400 = '#4ade80';
 const YELLOW = '#fde047';
 
-function getFairyImage(base: string, ranking?: string): string {
-  const r = ranking?.toUpperCase();
-  if (r === 'S') return `${base}/images/fairy_perfect.png`;
+function getFairyImage(base: string, rank?: string): string {
+  const r = rank?.toUpperCase();
+  if (r === 'PERFECT') return `${base}/images/fairy_perfect.png`;
   if (r === 'A') return `${base}/images/fairy_proud.png`;
   if (r === 'B') return `${base}/images/fairy_happy.png`;
   return `${base}/images/fairy_excited.png`;
 }
 
-function getRankColor(ranking?: string): string {
-  const r = ranking?.toUpperCase();
-  if (r === 'S') return '#FFD700';
-  if (r === 'A') return GREEN;
+function getRankColor(rank?: string): string {
+  const r = rank?.toUpperCase();
+  if (r === 'PERFECT') return '#FFD700';
+  if (r === 'A') return '#FF8C00';
   if (r === 'B') return '#00BFFF';
-  if (r === 'C') return '#FF8C00';
+  if (r === 'C') return '#ffffff';
   return '#aaaaaa';
 }
 
@@ -44,22 +44,22 @@ function Row({ label, value, valueColor = GREEN_400 }: RowProps) {
 
 export function AfTemplate({
   title,
-  metric,
-  capacity,
-  condition,
-  ranking,
+  wpm,
+  acc,
+  azik,
+  rank,
   imageBaseUrl,
   comment,
   training,
 }: OGParams) {
-  const rankColor = getRankColor(ranking);
+  const rankColor = getRankColor(rank);
   const isTraining = training === 'true';
 
   // Force excited pose for training, otherwise select by rank
   const fairyImg = imageBaseUrl
     ? (isTraining
       ? `${imageBaseUrl}/images/fairy_excited.png`
-      : getFairyImage(imageBaseUrl, ranking))
+      : getFairyImage(imageBaseUrl, rank))
     : null;
 
   return (
@@ -176,12 +176,12 @@ export function AfTemplate({
                 justifyContent: 'center',
               }}>
                 {title && <Row label="STAGE:" value={title} valueColor={GREEN_400} />}
-                {ranking && ranking !== 'false' && (
-                  <Row label="RANK:" value={ranking.toUpperCase()} valueColor={rankColor} />
+                {rank && (
+                  <Row label="RANK:" value={rank.toUpperCase()} valueColor={rankColor} />
                 )}
-                {metric && <Row label="SPEED (WPM):" value={metric} valueColor={YELLOW} />}
-                {capacity && <Row label="ACCURACY:" value={`${capacity}%`} valueColor={YELLOW} />}
-                {condition && <Row label="AZIK RATIO:" value={`${condition}%`} valueColor="#00BFFF" />}
+                {wpm && <Row label="SPEED (WPM):" value={wpm} valueColor={YELLOW} />}
+                {acc && <Row label="ACCURACY:" value={`${acc}%`} valueColor={YELLOW} />}
+                {azik && <Row label="AZIK RATIO:" value={`${azik}%`} valueColor="#00BFFF" />}
               </div>
             </div>
           )}
