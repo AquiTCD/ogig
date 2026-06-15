@@ -24,8 +24,14 @@ export default function Home() {
   const [game, setGame] = useState('GUILTY GEAR -STRIVE-');
   const [elimination, setElimination] = useState('false');
   const [owner, setOwner] = useState('デブユーザー');
+
+  // af-specific parameters
   const [comment, setComment] = useState('');
   const [training, setTraining] = useState('false');
+  const [wpm, setWpm] = useState('321');
+  const [acc, setAcc] = useState('98.5');
+  const [azik, setAzik] = useState('85');
+  const [rank, setRank] = useState('PERFECT');
 
   const [debouncedUrl, setDebouncedUrl] = useState('');
   const [copied, setCopied] = useState(false);
@@ -46,22 +52,18 @@ export default function Home() {
       setGame('GUILTY GEAR -STRIVE-');
       setElimination('false');
       setOwner('デブユーザー');
-      setComment('');
-      setTraining('false');
     } else if (th === 'af') {
       setTitle('羅生門');
-      setMetric('321');
-      setCapacity('98.5');
-      setCondition('85');
-      setRanking('S');
+      setWpm('321');
+      setAcc('98.5');
+      setAzik('85');
+      setRank('PERFECT');
       setComment('マジ神タイピングじゃん！天才すぎ✨');
       setTraining('false');
     } else {
       setTitle('DYNAMIC OGP GENERATOR');
       setDescription('Vercel Edge Functions + @vercel/og');
       setDate('2026/05/30');
-      setComment('');
-      setTraining('false');
     }
   };
 
@@ -78,7 +80,11 @@ export default function Home() {
     el: string,
     ow: string,
     cm: string,
-    tr: string
+    tr: string,
+    wp: string,
+    ac: string,
+    az: string,
+    rk: string
   ) => {
     if (typeof window === 'undefined') return '';
     const origin = window.location.origin;
@@ -93,10 +99,10 @@ export default function Home() {
       params.append('elimination', el);
       if (ow) params.append('owner', ow);
     } else if (th === 'af') {
-      if (me) params.append('metric', me);
-      if (pa) params.append('capacity', pa);
-      if (co) params.append('condition', co);
-      if (rn) params.append('ranking', rn);
+      if (wp) params.append('wpm', wp);
+      if (ac) params.append('acc', ac);
+      if (az) params.append('azik', az);
+      if (rk) params.append('rank', rk);
       if (cm) params.append('comment', cm);
       if (tr === 'true') params.append('training', 'true');
     }
@@ -104,7 +110,7 @@ export default function Home() {
   };
 
   useEffect(() => {
-    const newUrl = getOgpUrl(theme, title, description, date, ranking, condition, capacity, metric, game, elimination, owner, comment, training);
+    const newUrl = getOgpUrl(theme, title, description, date, ranking, condition, capacity, metric, game, elimination, owner, comment, training, wpm, acc, azik, rank);
     const handler = setTimeout(() => {
       if (newUrl !== debouncedUrl) {
         setDebouncedUrl(newUrl);
@@ -114,7 +120,7 @@ export default function Home() {
     }, 500);
 
     return () => clearTimeout(handler);
-  }, [theme, title, description, date, ranking, condition, capacity, metric, game, elimination, owner, comment, training, debouncedUrl]);
+  }, [theme, title, description, date, ranking, condition, capacity, metric, game, elimination, owner, comment, training, wpm, acc, azik, rank, debouncedUrl]);
 
   const handleCopy = async () => {
     try {
@@ -249,7 +255,7 @@ export default function Home() {
                             : 'bg-zinc-950/40 border-zinc-800 text-zinc-500 rounded-lg hover:border-green-700'
                           : isActive
                           ? 'bg-red-950/40 border-red-600 text-red-300 rounded-lg'
-                          : 'bg-zinc-950/40 border-zinc-800 text-zinc-500 rounded-lg hover:border-zinc-650'
+                          : 'bg-zinc-950/40 border-zinc-800 text-zinc-500 rounded-lg hover:border-zinc-700'
                       }`}
                     >
                       {t.label}
@@ -471,8 +477,8 @@ export default function Home() {
                     <input
                       type="text"
                       disabled={training === 'true'}
-                      value={metric}
-                      onChange={(e) => { setMetric(e.target.value); setLoading(true); }}
+                      value={wpm}
+                      onChange={(e) => { setWpm(e.target.value); setLoading(true); }}
                       className={`bg-zinc-950 border text-sm outline-none px-3 py-2 rounded ${
                         training === 'true'
                           ? 'border-zinc-900 text-zinc-600 cursor-not-allowed'
@@ -486,8 +492,8 @@ export default function Home() {
                     <input
                       type="text"
                       disabled={training === 'true'}
-                      value={capacity}
-                      onChange={(e) => { setCapacity(e.target.value); setLoading(true); }}
+                      value={acc}
+                      onChange={(e) => { setAcc(e.target.value); setLoading(true); }}
                       className={`bg-zinc-950 border text-sm outline-none px-3 py-2 rounded ${
                         training === 'true'
                           ? 'border-zinc-900 text-zinc-600 cursor-not-allowed'
@@ -503,8 +509,8 @@ export default function Home() {
                     <input
                       type="text"
                       disabled={training === 'true'}
-                      value={condition}
-                      onChange={(e) => { setCondition(e.target.value); setLoading(true); }}
+                      value={azik}
+                      onChange={(e) => { setAzik(e.target.value); setLoading(true); }}
                       className={`bg-zinc-950 border text-sm outline-none px-3 py-2 rounded ${
                         training === 'true'
                           ? 'border-zinc-900 text-zinc-600 cursor-not-allowed'
@@ -517,15 +523,15 @@ export default function Home() {
                     <label className={`text-xs font-bold tracking-wider ${training === 'true' ? 'text-zinc-600' : 'text-green-400'}`}>RANK</label>
                     <select
                       disabled={training === 'true'}
-                      value={ranking}
-                      onChange={(e) => { setRanking(e.target.value); setLoading(true); }}
+                      value={rank}
+                      onChange={(e) => { setRank(e.target.value); setLoading(true); }}
                       className={`bg-zinc-950 border text-sm outline-none px-3 py-2 rounded cursor-pointer ${
                         training === 'true'
                           ? 'border-zinc-900 text-zinc-600 cursor-not-allowed'
                           : 'border-green-800 text-green-300 focus:border-green-500'
                       }`}
                     >
-                      <option value="S">S</option>
+                      <option value="PERFECT">PERFECT</option>
                       <option value="A">A</option>
                       <option value="B">B</option>
                       <option value="C">C</option>
@@ -686,19 +692,16 @@ url_params = {
   capacity: @mission.capacity.present? ? "#{@mission.capacity}名" : "制限なし",
   metric: "#{@mission.metric_label} 累計"
 }
-@og_image = "https://ogig.solunita.net/api/og?#{url_params.to_query}"` : isAzikFairy ? `// 例: af でのシェアURL組み立て
+@og_image = "https://ogig.solunita.net/api/og?#{url_params.to_query}"` : isAzikFairy ? `// 例: azik-fairy でのシェアURL組み立て
 const shareUrl = new URL("https://[game-domain]/share");
 shareUrl.searchParams.set("theme", "af");
 shareUrl.searchParams.set("title", stageName);
 shareUrl.searchParams.set("wpm", stats.wpm.toString());
 shareUrl.searchParams.set("acc", stats.accuracy.toString());
 shareUrl.searchParams.set("azik", azikRatio.toString());
-shareUrl.searchParams.set("rank", rank); // "S" | "A" | "B" | "C"
-shareUrl.searchParams.set("comment", "マジ神タイピングじゃん！✨"); // 妖精コメント
-shareUrl.searchParams.set("training", "true"); // 練習中の場合のみtrue
-
-// /share の CF Pages Function が ogig に変換:
-// wpm → metric, acc → capacity, azik → condition, comment → comment, training → training` : `# 例: Ruby on Rails での OGP URL 組み立て
+shareUrl.searchParams.set("rank", rank); // "PERFECT" | "A" | "B" | "C"
+shareUrl.searchParams.set("comment", "マジ神タイピングじゃん！✨");
+shareUrl.searchParams.set("training", "true"); // 練習中の場合のみ` : `# 例: Ruby on Rails での OGP URL 組み立て
 url_params = {
   title: @article.title,
   subtitle: @article.category,

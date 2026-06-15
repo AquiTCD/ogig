@@ -79,11 +79,21 @@ test('returns 200 even when title exceeds max length', async () => {
   expect(response.status).toBe(200);
 });
 
-test('mission-card theme returns 200', async () => {
+test('mission-card theme returns 200 without ranking badge', async () => {
   vi.stubGlobal('fetch', mockFetchOk());
 
   const { GET } = await import('@/app/api/og/route');
-  const url = 'http://localhost:3000/api/og?theme=mission-card&title=ミッション&game=GGST&elimination=true&ranking=per_checkpoint&description=ゲーム名&date=2026/06/01 〜 2026/08/31&capacity=20名&owner=テストオーナー';
+  const url = 'http://localhost:3000/api/og?theme=mission-card&title=ミッション&game=GGST&elimination=true&ranking=false&description=ゲーム名&date=2026/06/01 〜 2026/08/31&capacity=20名&owner=テストオーナー';
+  const response = await GET(new Request(url));
+
+  expect(response.status).toBe(200);
+});
+
+test('mission-card theme returns 200 with ranking badge', async () => {
+  vi.stubGlobal('fetch', mockFetchOk());
+
+  const { GET } = await import('@/app/api/og/route');
+  const url = 'http://localhost:3000/api/og?theme=mission-card&title=ランキングミッション&game=GGST&elimination=false&ranking=true&description=説明&date=2026/06/01 〜 2026/08/31&capacity=20名';
   const response = await GET(new Request(url));
 
   expect(response.status).toBe(200);
@@ -93,7 +103,7 @@ test('af theme returns 200 with all parameters', async () => {
   vi.stubGlobal('fetch', mockFetchOk());
 
   const { GET } = await import('@/app/api/og/route');
-  const url = 'http://localhost:3000/api/og?theme=af&title=羅生門&metric=320&capacity=98.5&condition=87&ranking=S&comment=マジ神タイピングじゃん！';
+  const url = 'http://localhost:3000/api/og?theme=af&title=羅生門&wpm=320&acc=98.5&azik=87&rank=PERFECT&comment=マジ神タイピングじゃん！';
   const response = await GET(new Request(url));
 
   expect(response.status).toBe(200);
