@@ -2,6 +2,7 @@ import { ImageResponse } from '@vercel/og';
 import { DefaultTemplate } from './templates/default';
 import { MissionCardTemplate } from './templates/mission-card';
 import { AfTemplate } from './templates/af';
+import { parseAfParams, parseMissionCardParams } from './params';
 import type { OGTemplate } from './types';
 
 export const runtime = 'edge';
@@ -14,38 +15,26 @@ const TEMPLATES: Record<string, OGTemplate> = {
   af: AfTemplate,
 };
 
-let notoFontPromise: Promise<ArrayBuffer> | null = null;
-let pressStartFontPromise: Promise<ArrayBuffer> | null = null;
-
-function getFontData(origin: string): Promise<ArrayBuffer> {
-  if (!notoFontPromise) {
-    notoFontPromise = fetch(`${origin}/fonts/NotoSansJP-Bold.otf`)
-      .then((res) => {
-        if (!res.ok) throw new Error(`Failed to fetch font: ${res.statusText}`);
-        return res.arrayBuffer();
-      })
-      .catch((err) => {
-        notoFontPromise = null;
-        throw err;
-      });
-  }
-  return notoFontPromise;
+function createFontLoader(path: string): (origin: string) => Promise<ArrayBuffer> {
+  let cache: Promise<ArrayBuffer> | null = null;
+  return (origin: string) => {
+    if (!cache) {
+      cache = fetch(`${origin}${path}`)
+        .then((res) => {
+          if (!res.ok) throw new Error(`Failed to fetch font: ${res.statusText}`);
+          return res.arrayBuffer();
+        })
+        .catch((err) => {
+          cache = null;
+          throw err;
+        });
+    }
+    return cache;
+  };
 }
 
-function getPressStartFontData(origin: string): Promise<ArrayBuffer> {
-  if (!pressStartFontPromise) {
-    pressStartFontPromise = fetch(`${origin}/fonts/PressStart2P.ttf`)
-      .then((res) => {
-        if (!res.ok) throw new Error(`Failed to fetch font: ${res.statusText}`);
-        return res.arrayBuffer();
-      })
-      .catch((err) => {
-        pressStartFontPromise = null;
-        throw err;
-      });
-  }
-  return pressStartFontPromise;
-}
+const getNotoFont = createFontLoader('/fonts/NotoSansJP-Bold.otf');
+const getPressStartFont = createFontLoader('/fonts/PressStart2P.ttf');
 
 export async function GET(request: Request) {
   try {
@@ -56,19 +45,11 @@ export async function GET(request: Request) {
     const description = (searchParams.get('description') || 'Description').slice(0, MAX_LENGTHS.description);
     const date = (searchParams.get('date') || 'YYYY/MM/DD').slice(0, MAX_LENGTHS.date);
 
-    const ranking = searchParams.get('ranking') || undefined;
-    const condition = searchParams.get('condition') || undefined;
-    const capacity = searchParams.get('capacity') || undefined;
-    const metric = searchParams.get('metric') || undefined;
-    const owner = searchParams.get('owner') || undefined;
-    const game = searchParams.get('game') || undefined;
-    const elimination = searchParams.get('elimination') || undefined;
-    const comment = searchParams.get('comment') || undefined;
-    const training = searchParams.get('training') || undefined;
-    const wpm = searchParams.get('wpm') || undefined;
-    const acc = searchParams.get('acc') || undefined;
-    const azik = searchParams.get('azik') || undefined;
-    const rank = searchParams.get('rank') || undefined;
+    const themeParams = theme === 'af'
+      ? parseAfParams(searchParams)
+      : theme === 'mission-card'
+      ? parseMissionCardParams(searchParams)
+      : {};
 
     const Template = TEMPLATES[theme] ?? TEMPLATES.default;
 
@@ -76,8 +57,8 @@ export async function GET(request: Request) {
     let pressStartData: ArrayBuffer;
     try {
       [fontData, pressStartData] = await Promise.all([
-        getFontData(origin),
-        getPressStartFontData(origin),
+        getNotoFont(origin),
+        getPressStartFont(origin),
       ]);
     } catch (fontError) {
       console.error('Font loading error:', fontError);
@@ -89,19 +70,7 @@ export async function GET(request: Request) {
         title={title}
         description={description}
         date={date}
-        ranking={ranking}
-        condition={condition}
-        capacity={capacity}
-        metric={metric}
-        owner={owner}
-        game={game}
-        elimination={elimination}
-        comment={comment}
-        training={training}
-        wpm={wpm}
-        acc={acc}
-        azik={azik}
-        rank={rank}
+        {...themeParams}
         imageBaseUrl={origin}
       />, {
       width: 1200,
