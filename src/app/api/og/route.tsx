@@ -1,6 +1,7 @@
 import { ImageResponse } from '@vercel/og';
 import { DefaultTemplate } from './templates/default';
 import { MissionCardTemplate } from './templates/mission-card';
+import { AfTemplate } from './templates/af';
 import type { OGTemplate } from './types';
 
 export const runtime = 'edge';
@@ -10,23 +11,40 @@ const MAX_LENGTHS = { title: 100, description: 80, date: 20 };
 const TEMPLATES: Record<string, OGTemplate> = {
   default: DefaultTemplate,
   'mission-card': MissionCardTemplate,
+  af: AfTemplate,
 };
 
-let fontPromise: Promise<ArrayBuffer> | null = null;
+let notoFontPromise: Promise<ArrayBuffer> | null = null;
+let pressStartFontPromise: Promise<ArrayBuffer> | null = null;
 
 function getFontData(origin: string): Promise<ArrayBuffer> {
-  if (!fontPromise) {
-    fontPromise = fetch(`${origin}/fonts/NotoSansJP-Bold.otf`)
+  if (!notoFontPromise) {
+    notoFontPromise = fetch(`${origin}/fonts/NotoSansJP-Bold.otf`)
       .then((res) => {
         if (!res.ok) throw new Error(`Failed to fetch font: ${res.statusText}`);
         return res.arrayBuffer();
       })
       .catch((err) => {
-        fontPromise = null;
+        notoFontPromise = null;
         throw err;
       });
   }
-  return fontPromise;
+  return notoFontPromise;
+}
+
+function getPressStartFontData(origin: string): Promise<ArrayBuffer> {
+  if (!pressStartFontPromise) {
+    pressStartFontPromise = fetch(`${origin}/fonts/PressStart2P.ttf`)
+      .then((res) => {
+        if (!res.ok) throw new Error(`Failed to fetch font: ${res.statusText}`);
+        return res.arrayBuffer();
+      })
+      .catch((err) => {
+        pressStartFontPromise = null;
+        throw err;
+      });
+  }
+  return pressStartFontPromise;
 }
 
 export async function GET(request: Request) {
@@ -45,12 +63,18 @@ export async function GET(request: Request) {
     const owner = searchParams.get('owner') || undefined;
     const game = searchParams.get('game') || undefined;
     const elimination = searchParams.get('elimination') || undefined;
+    const comment = searchParams.get('comment') || undefined;
+    const training = searchParams.get('training') || undefined;
 
     const Template = TEMPLATES[theme] ?? TEMPLATES.default;
 
     let fontData: ArrayBuffer;
+    let pressStartData: ArrayBuffer;
     try {
-      fontData = await getFontData(origin);
+      [fontData, pressStartData] = await Promise.all([
+        getFontData(origin),
+        getPressStartFontData(origin),
+      ]);
     } catch (fontError) {
       console.error('Font loading error:', fontError);
       return new Response('Font fetch error', { status: 500 });
@@ -68,12 +92,16 @@ export async function GET(request: Request) {
         owner={owner}
         game={game}
         elimination={elimination}
+        comment={comment}
+        training={training}
+        imageBaseUrl={origin}
       />, {
       width: 1200,
       height: 630,
       fonts: [
         { name: 'Noto Sans JP', data: fontData, style: 'normal', weight: 700 },
         { name: 'Noto Sans JP', data: fontData, style: 'normal', weight: 900 },
+        { name: 'Press Start 2P', data: pressStartData, style: 'normal', weight: 400 },
       ],
       headers: {
         'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=604800',

@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 const THEMES = [
   { value: 'default', label: 'Default' },
   { value: 'mission-card', label: 'Mission Card' },
+  { value: 'af', label: 'AZIK FAIRY' },
 ] as const;
 
 type ThemeValue = (typeof THEMES)[number]['value'];
@@ -23,6 +24,8 @@ export default function Home() {
   const [game, setGame] = useState('GUILTY GEAR -STRIVE-');
   const [elimination, setElimination] = useState('false');
   const [owner, setOwner] = useState('デブユーザー');
+  const [comment, setComment] = useState('');
+  const [training, setTraining] = useState('false');
 
   const [debouncedUrl, setDebouncedUrl] = useState('');
   const [copied, setCopied] = useState(false);
@@ -43,10 +46,22 @@ export default function Home() {
       setGame('GUILTY GEAR -STRIVE-');
       setElimination('false');
       setOwner('デブユーザー');
+      setComment('');
+      setTraining('false');
+    } else if (th === 'af') {
+      setTitle('羅生門');
+      setMetric('321');
+      setCapacity('98.5');
+      setCondition('85');
+      setRanking('S');
+      setComment('マジ神タイピングじゃん！天才すぎ✨');
+      setTraining('false');
     } else {
       setTitle('DYNAMIC OGP GENERATOR');
       setDescription('Vercel Edge Functions + @vercel/og');
       setDate('2026/05/30');
+      setComment('');
+      setTraining('false');
     }
   };
 
@@ -61,7 +76,9 @@ export default function Home() {
     me: string,
     gm: string,
     el: string,
-    ow: string
+    ow: string,
+    cm: string,
+    tr: string
   ) => {
     if (typeof window === 'undefined') return '';
     const origin = window.location.origin;
@@ -75,12 +92,19 @@ export default function Home() {
       params.append('game', gm);
       params.append('elimination', el);
       if (ow) params.append('owner', ow);
+    } else if (th === 'af') {
+      if (me) params.append('metric', me);
+      if (pa) params.append('capacity', pa);
+      if (co) params.append('condition', co);
+      if (rn) params.append('ranking', rn);
+      if (cm) params.append('comment', cm);
+      if (tr === 'true') params.append('training', 'true');
     }
     return `${origin}/api/og?${params.toString()}`;
   };
 
   useEffect(() => {
-    const newUrl = getOgpUrl(theme, title, description, date, ranking, condition, capacity, metric, game, elimination, owner);
+    const newUrl = getOgpUrl(theme, title, description, date, ranking, condition, capacity, metric, game, elimination, owner, comment, training);
     const handler = setTimeout(() => {
       if (newUrl !== debouncedUrl) {
         setDebouncedUrl(newUrl);
@@ -90,7 +114,7 @@ export default function Home() {
     }, 500);
 
     return () => clearTimeout(handler);
-  }, [theme, title, description, date, ranking, condition, capacity, metric, game, elimination, owner, debouncedUrl]);
+  }, [theme, title, description, date, ranking, condition, capacity, metric, game, elimination, owner, comment, training, debouncedUrl]);
 
   const handleCopy = async () => {
     try {
@@ -103,6 +127,7 @@ export default function Home() {
   };
 
   const isMissionCard = theme === 'mission-card';
+  const isAzikFairy = theme === 'af';
 
   return (
     <div
@@ -218,6 +243,10 @@ export default function Home() {
                           ? isActive
                             ? 'bg-[#ecb0ac] border-2 border-[#100F0F] text-[#100F0F] rounded-none shadow-[2px_2px_0px_#100F0F]'
                             : 'bg-[#E6E4D9] border-2 border-[#100F0F] text-[#6F6E69] rounded-none hover:bg-[#ecb0ac] hover:text-[#100F0F]'
+                          : isAzikFairy
+                          ? isActive
+                            ? 'bg-green-950/60 border-green-500 text-green-400 rounded-lg'
+                            : 'bg-zinc-950/40 border-zinc-800 text-zinc-500 rounded-lg hover:border-green-700'
                           : isActive
                           ? 'bg-red-950/40 border-red-600 text-red-300 rounded-lg'
                           : 'bg-zinc-950/40 border-zinc-800 text-zinc-500 rounded-lg hover:border-zinc-650'
@@ -234,10 +263,10 @@ export default function Home() {
             <div className="flex flex-col gap-2 mb-4">
               <label
                 className={`text-xs font-bold tracking-wider transition-colors duration-300 ${
-                  isMissionCard ? 'text-[#100F0F]' : 'text-zinc-400'
+                  isMissionCard ? 'text-[#100F0F]' : isAzikFairy ? 'text-green-400' : 'text-zinc-400'
                 }`}
               >
-                {isMissionCard ? 'MISSION TITLE' : 'TITLE'}
+                {isMissionCard ? 'MISSION TITLE' : isAzikFairy ? 'STAGE' : 'TITLE'}
               </label>
               <textarea
                 value={title}
@@ -255,8 +284,8 @@ export default function Home() {
               />
             </div>
 
-            {/* Input: Description */}
-            <div className="flex flex-col gap-2 mb-4">
+            {/* Input: Description — hidden for azik-fairy */}
+            <div className={`flex flex-col gap-2 mb-4 ${isAzikFairy ? 'hidden' : ''}`}>
               <label
                 className={`text-xs font-bold tracking-wider transition-colors duration-300 ${
                   isMissionCard ? 'text-[#100F0F]' : 'text-zinc-400'
@@ -280,8 +309,8 @@ export default function Home() {
               />
             </div>
 
-            {/* Input: Date */}
-            <div className="flex flex-col gap-2 mb-4">
+            {/* Input: Date — hidden for azik-fairy */}
+            <div className={`flex flex-col gap-2 mb-4 ${isAzikFairy ? 'hidden' : ''}`}>
               <label
                 className={`text-xs font-bold tracking-wider transition-colors duration-300 ${
                   isMissionCard ? 'text-[#100F0F]' : 'text-zinc-400'
@@ -417,6 +446,104 @@ export default function Home() {
                   />
                 </div>
 
+              </div>
+            )}
+
+            {/* AZIK FAIRY Specific Parameters Form */}
+            {isAzikFairy && (
+              <div className="flex flex-col gap-4 mb-4">
+                {/* Training Mode Toggle */}
+                <div className="flex flex-col gap-2">
+                  <label className="text-xs font-bold text-green-400 tracking-wider">TRAINING MODE</label>
+                  <select
+                    value={training}
+                    onChange={(e) => { setTraining(e.target.value); setLoading(true); }}
+                    className="bg-zinc-950 border border-green-800 text-green-300 px-3 py-2 rounded text-sm outline-none focus:border-green-500 cursor-pointer"
+                  >
+                    <option value="false">通常リザルト表示 (OFF)</option>
+                    <option value="true">練習中表示 (ON)</option>
+                  </select>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="flex flex-col gap-2">
+                    <label className={`text-xs font-bold tracking-wider ${training === 'true' ? 'text-zinc-600' : 'text-green-400'}`}>WPM</label>
+                    <input
+                      type="text"
+                      disabled={training === 'true'}
+                      value={metric}
+                      onChange={(e) => { setMetric(e.target.value); setLoading(true); }}
+                      className={`bg-zinc-950 border text-sm outline-none px-3 py-2 rounded ${
+                        training === 'true'
+                          ? 'border-zinc-900 text-zinc-600 cursor-not-allowed'
+                          : 'border-green-800 text-green-300 focus:border-green-500'
+                      }`}
+                      placeholder="例: 321"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <label className={`text-xs font-bold tracking-wider ${training === 'true' ? 'text-zinc-600' : 'text-green-400'}`}>ACCURACY (%)</label>
+                    <input
+                      type="text"
+                      disabled={training === 'true'}
+                      value={capacity}
+                      onChange={(e) => { setCapacity(e.target.value); setLoading(true); }}
+                      className={`bg-zinc-950 border text-sm outline-none px-3 py-2 rounded ${
+                        training === 'true'
+                          ? 'border-zinc-900 text-zinc-600 cursor-not-allowed'
+                          : 'border-green-800 text-green-300 focus:border-green-500'
+                      }`}
+                      placeholder="例: 98.5"
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="flex flex-col gap-2">
+                    <label className={`text-xs font-bold tracking-wider ${training === 'true' ? 'text-zinc-600' : 'text-green-400'}`}>AZIK RATIO (%)</label>
+                    <input
+                      type="text"
+                      disabled={training === 'true'}
+                      value={condition}
+                      onChange={(e) => { setCondition(e.target.value); setLoading(true); }}
+                      className={`bg-zinc-950 border text-sm outline-none px-3 py-2 rounded ${
+                        training === 'true'
+                          ? 'border-zinc-900 text-zinc-600 cursor-not-allowed'
+                          : 'border-green-800 text-green-300 focus:border-green-500'
+                      }`}
+                      placeholder="例: 85"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <label className={`text-xs font-bold tracking-wider ${training === 'true' ? 'text-zinc-600' : 'text-green-400'}`}>RANK</label>
+                    <select
+                      disabled={training === 'true'}
+                      value={ranking}
+                      onChange={(e) => { setRanking(e.target.value); setLoading(true); }}
+                      className={`bg-zinc-950 border text-sm outline-none px-3 py-2 rounded cursor-pointer ${
+                        training === 'true'
+                          ? 'border-zinc-900 text-zinc-600 cursor-not-allowed'
+                          : 'border-green-800 text-green-300 focus:border-green-500'
+                      }`}
+                    >
+                      <option value="S">S</option>
+                      <option value="A">A</option>
+                      <option value="B">B</option>
+                      <option value="C">C</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Comment Input */}
+                <div className="flex flex-col gap-2">
+                  <label className="text-xs font-bold text-green-400 tracking-wider">COMMENT (ようせいからのコメント)</label>
+                  <textarea
+                    value={comment}
+                    onChange={(e) => { setComment(e.target.value); setLoading(true); }}
+                    rows={2}
+                    className="bg-zinc-950 border border-green-800 text-green-300 px-3 py-2 rounded text-sm outline-none focus:border-green-500 resize-none"
+                    placeholder="例: マジ神タイピングじゃん！天才すぎ✨"
+                  />
+                </div>
               </div>
             )}
 
@@ -559,13 +686,25 @@ url_params = {
   capacity: @mission.capacity.present? ? "#{@mission.capacity}名" : "制限なし",
   metric: "#{@mission.metric_label} 累計"
 }
-@og_image = "https://ogig.vercel.app/api/og?#{url_params.to_query}"` : `# 例: Ruby on Rails での OGP URL 組み立て
+@og_image = "https://ogig.solunita.net/api/og?#{url_params.to_query}"` : isAzikFairy ? `// 例: af でのシェアURL組み立て
+const shareUrl = new URL("https://[game-domain]/share");
+shareUrl.searchParams.set("theme", "af");
+shareUrl.searchParams.set("title", stageName);
+shareUrl.searchParams.set("wpm", stats.wpm.toString());
+shareUrl.searchParams.set("acc", stats.accuracy.toString());
+shareUrl.searchParams.set("azik", azikRatio.toString());
+shareUrl.searchParams.set("rank", rank); // "S" | "A" | "B" | "C"
+shareUrl.searchParams.set("comment", "マジ神タイピングじゃん！✨"); // 妖精コメント
+shareUrl.searchParams.set("training", "true"); // 練習中の場合のみtrue
+
+// /share の CF Pages Function が ogig に変換:
+// wpm → metric, acc → capacity, azik → condition, comment → comment, training → training` : `# 例: Ruby on Rails での OGP URL 組み立て
 url_params = {
   title: @article.title,
   subtitle: @article.category,
   date: @article.published_at.strftime('%Y/%m/%d')
 }
-@og_image = "https://ogig.vercel.app/api/og?#{url_params.to_query}"`}
+@og_image = "https://ogig.solunita.net/api/og?#{url_params.to_query}"`}
               </pre>
             </div>
           </div>
@@ -577,7 +716,7 @@ url_params = {
         className={`border-t py-6 text-center text-xs transition-all duration-300 ${
           isMissionCard
             ? 'border-[#100F0F] text-[#6F6E69] bg-[#F2F0E5]'
-            : 'border-zinc-900/60 text-zinc-650 bg-zinc-950/40'
+            : 'border-zinc-900/60 text-zinc-600 bg-zinc-950/40'
         }`}
       >
         <p>

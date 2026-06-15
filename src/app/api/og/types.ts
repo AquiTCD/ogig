@@ -10,6 +10,10 @@ export type OGParams = {
   owner?: string;
   game?: string;
   elimination?: string;
+  comment?: string;
+  training?: string;
+  // Runtime origin for image URLs
+  imageBaseUrl?: string;
 };
 
 export type OGTemplate = (params: OGParams) => React.ReactElement;
