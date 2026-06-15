@@ -2,7 +2,7 @@ export type OGParams = {
   title: string;
   description: string;
   date: string;
-  // Optional mission-specific params
+  // mission-card params
   ranking?: string;
   condition?: string;
   capacity?: string;
@@ -10,13 +10,13 @@ export type OGParams = {
   owner?: string;
   game?: string;
   elimination?: string;
-  comment?: string;
-  training?: string;
-  // af-specific params
+  // af params
   wpm?: string;
   acc?: string;
   azik?: string;
   rank?: string;
+  comment?: string;
+  training?: string;
   // Runtime origin for image URLs
   imageBaseUrl?: string;
 };
