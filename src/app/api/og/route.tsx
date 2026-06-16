@@ -5,7 +5,9 @@ import { DefaultTemplate } from './templates/default';
 import { MissionCardTemplate } from './templates/mission-card';
 import { AfTemplate } from './templates/af';
 import { parseAfParams, parseMissionCardParams } from './params';
-import type { OGTemplate } from './types';
+import type { OGTemplate, OGParams } from './types';
+import { fetchResultComments, resolveComment } from './comments';
+
 
 const MAX_LENGTHS = { title: 100, description: 80, date: 20 };
 
@@ -39,11 +41,18 @@ export async function GET(request: Request) {
     const description = (searchParams.get('description') || 'Description').slice(0, MAX_LENGTHS.description);
     const date = (searchParams.get('date') || 'YYYY/MM/DD').slice(0, MAX_LENGTHS.date);
 
-    const themeParams = theme === 'af'
-      ? parseAfParams(searchParams)
-      : theme === 'mission-card'
-      ? parseMissionCardParams(searchParams)
-      : {};
+    let themeParams: Partial<OGParams> = {};
+
+    if (theme === 'af') {
+      const afParams = parseAfParams(searchParams);
+      if (afParams.comment) {
+        const commentsMap = await fetchResultComments();
+        afParams.comment = resolveComment(afParams.comment, commentsMap);
+      }
+      themeParams = afParams;
+    } else if (theme === 'mission-card') {
+      themeParams = parseMissionCardParams(searchParams);
+    }
 
     const Template = TEMPLATES[theme] ?? TEMPLATES.default;
 
