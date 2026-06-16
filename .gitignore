@@ -20,8 +20,8 @@
 # production
 /build
 
-# fonts (downloaded at build time via prebuild script)
-/public/fonts/
+# fonts — NotoSansJP is large (16MB) and downloaded at build time via prebuild script
+/public/fonts/NotoSansJP-Bold.otf
 
 # misc
 .DS_Store
