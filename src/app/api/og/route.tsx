@@ -1,11 +1,11 @@
-import { ImageResponse } from '@vercel/og';
+import { ImageResponse } from 'next/og';
+import { readFile } from 'node:fs/promises';
+import { join } from 'node:path';
 import { DefaultTemplate } from './templates/default';
 import { MissionCardTemplate } from './templates/mission-card';
 import { AfTemplate } from './templates/af';
 import { parseAfParams, parseMissionCardParams } from './params';
 import type { OGTemplate } from './types';
-
-export const runtime = 'edge';
 
 const MAX_LENGTHS = { title: 100, description: 80, date: 20 };
 
@@ -15,26 +15,20 @@ const TEMPLATES: Record<string, OGTemplate> = {
   af: AfTemplate,
 };
 
-function createFontLoader(path: string): (origin: string) => Promise<ArrayBuffer> {
+function createFontReader(relativePath: string): () => Promise<ArrayBuffer> {
   let cache: Promise<ArrayBuffer> | null = null;
-  return (origin: string) => {
+  return () => {
     if (!cache) {
-      cache = fetch(`${origin}${path}`)
-        .then((res) => {
-          if (!res.ok) throw new Error(`Failed to fetch font: ${res.statusText}`);
-          return res.arrayBuffer();
-        })
-        .catch((err) => {
-          cache = null;
-          throw err;
-        });
+      cache = readFile(join(process.cwd(), relativePath))
+        .then(buf => buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength) as ArrayBuffer)
+        .catch(err => { cache = null; throw err; });
     }
     return cache;
   };
 }
 
-const getNotoFont = createFontLoader('/fonts/NotoSansJP-Bold.otf');
-const getPressStartFont = createFontLoader('/fonts/PressStart2P.ttf');
+const getNotoFont = createFontReader('public/fonts/NotoSansJP-Bold.otf');
+const getPressStartFont = createFontReader('public/fonts/PressStart2P.ttf');
 
 export async function GET(request: Request) {
   try {
@@ -57,8 +51,8 @@ export async function GET(request: Request) {
     let pressStartData: ArrayBuffer;
     try {
       [fontData, pressStartData] = await Promise.all([
-        getNotoFont(origin),
-        getPressStartFont(origin),
+        getNotoFont(),
+        getPressStartFont(),
       ]);
     } catch (fontError) {
       console.error('Font loading error:', fontError);
