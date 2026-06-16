@@ -72,6 +72,7 @@ export function AfTemplate({
       padding: '8px',
       fontFamily: '"Press Start 2P", monospace',
       color: GREEN_400,
+      boxSizing: 'border-box',
     }}>
       <div style={{
         display: 'flex',
@@ -80,6 +81,7 @@ export function AfTemplate({
         width: '100%',
         height: '100%',
         border: `4px solid ${GREEN}`,
+        boxSizing: 'border-box',
       }}>
         {/* Left: stats & title */}
         <div style={{
@@ -106,7 +108,7 @@ export function AfTemplate({
             <div style={{
               display: 'flex',
               fontFamily: '"Noto Sans JP"',
-              fontSize: '28px',
+              fontSize: '36px',
               color: GREEN_400,
               letterSpacing: '2px',
               fontWeight: 'bold',
@@ -196,7 +198,7 @@ export function AfTemplate({
           height: '100%',
           flexShrink: 0,
           boxSizing: 'border-box',
-          padding: '36px 20px 36px 20px',
+          padding: '24px 16px 24px 16px',
           borderLeft: `4px solid ${GREEN}`,
           backgroundColor: BG_STATS,
         }}>
@@ -211,14 +213,14 @@ export function AfTemplate({
               borderRadius: '4px',
               width: '100%',
               boxSizing: 'border-box',
-              marginBottom: '16px',
+              marginBottom: '12px',
             }}>
               <div style={{
                 display: 'flex',
                 flexDirection: 'column',
                 border: `2px solid ${YELLOW}`,
                 padding: '12px 16px',
-                height: '120px', // Exactly 3 lines tall container
+                height: '170px', // Enlarged container to fit longer text
                 justifyContent: 'center', // Center vertically
                 alignItems: 'center', // Center horizontally
                 boxSizing: 'border-box',
@@ -229,7 +231,7 @@ export function AfTemplate({
                     style={{
                       display: 'flex',
                       fontFamily: '"Noto Sans JP"',
-                      fontSize: '28px',
+                      fontSize: '24px', // Slightly smaller font to allow more text wrapping
                       color: '#ffffff',
                       lineHeight: '1.4',
                       fontWeight: 'bold',
