@@ -4,7 +4,7 @@ const mockFontBuffer = Buffer.from(new Uint8Array(8));
 
 beforeEach(() => {
   vi.resetModules();
-  vi.doMock('@vercel/og', () => ({
+  vi.doMock('next/og', () => ({
     ImageResponse: class MockImageResponse extends Response {
       constructor(
         _element: unknown,
@@ -26,7 +26,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  vi.doUnmock('@vercel/og');
+  vi.doUnmock('next/og');
   vi.doUnmock('node:fs/promises');
 });
 
