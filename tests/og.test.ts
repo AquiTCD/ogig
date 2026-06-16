@@ -1,6 +1,7 @@
 import { vi, expect, test, beforeEach, afterEach } from 'vitest';
 
 const mockFontBuffer = Buffer.from(new Uint8Array(8));
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export let lastRenderedElement: any = null;
 
 beforeEach(() => {
@@ -31,6 +32,7 @@ beforeEach(() => {
       P1: 'Perfect Mock Comment',
       A1: 'A1 Mock Comment',
     }),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolveComment: (comment: string, map: any) => {
       if (map[comment]) return map[comment];
       if (/^[A-Z]\d+$/.test(comment)) return 'Default Mock Fallback';

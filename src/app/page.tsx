@@ -58,7 +58,7 @@ export default function Home() {
       setAcc('98.5');
       setAzik('85');
       setRank('PERFECT');
-      setComment('マジ神タイピングじゃん！天才すぎ✨');
+      setComment('P1');
       setTraining('false');
     } else {
       setTitle('DYNAMIC OGP GENERATOR');
@@ -700,7 +700,7 @@ shareUrl.searchParams.set("wpm", stats.wpm.toString());
 shareUrl.searchParams.set("acc", stats.accuracy.toString());
 shareUrl.searchParams.set("azik", azikRatio.toString());
 shareUrl.searchParams.set("rank", rank); // "PERFECT" | "A" | "B" | "C"
-shareUrl.searchParams.set("comment", "マジ神タイピングじゃん！✨");
+shareUrl.searchParams.set("comment", "A1"); // コメントID（A1など）を指定
 shareUrl.searchParams.set("training", "true"); // 練習中の場合のみ` : `# 例: Ruby on Rails での OGP URL 組み立て
 url_params = {
   title: @article.title,
