@@ -27,19 +27,32 @@ type RowProps = {
   label: string;
   value: string | undefined;
   valueColor?: string;
+  valueFontSize?: string;
 };
 
-function Row({ label, value, valueColor = GREEN_400 }: RowProps) {
+function Row({ label, value, valueColor = GREEN_400, valueFontSize = '36px' }: RowProps) {
   return (
-    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-      <span style={{ fontFamily: '"Press Start 2P"', fontSize: '28px', color: GREEN_400 }}>
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+      <span style={{ fontFamily: '"Press Start 2P"', fontSize: '28px', color: GREEN_400, flexShrink: 0 }}>
         {label}
       </span>
-      <span style={{ fontFamily: '"Press Start 2P"', fontSize: '36px', color: valueColor }}>
+      <span style={{
+        fontFamily: '"Press Start 2P", "Noto Sans JP", monospace',
+        fontSize: valueFontSize,
+        color: valueColor,
+        textAlign: 'right',
+      }}>
         {value ?? '—'}
       </span>
     </div>
   );
+}
+
+function getStageFontSize(text: string): string {
+  if (text.length > 20) return '20px';
+  if (text.length > 15) return '24px';
+  if (text.length > 10) return '30px';
+  return '36px';
 }
 
 export function AfTemplate({
@@ -87,7 +100,7 @@ export function AfTemplate({
         <div style={{
           display: 'flex',
           flexDirection: 'column',
-          flexGrow: 1,
+          width: '768px', // Fixed width to prevent stretching from long Stage names
           height: '100%',
           boxSizing: 'border-box',
           padding: '36px 32px 36px 40px',
@@ -177,7 +190,14 @@ export function AfTemplate({
                 gap: '20px',
                 justifyContent: 'center',
               }}>
-                {title && <Row label="STAGE:" value={title} valueColor={GREEN_400} />}
+                {title && (
+                  <Row
+                    label="STAGE:"
+                    value={title}
+                    valueColor={GREEN_400}
+                    valueFontSize={getStageFontSize(title)}
+                  />
+                )}
                 {rank && (
                   <Row label="RANK:" value={rank.toUpperCase()} valueColor={rankColor} />
                 )}
