@@ -27,10 +27,9 @@ type RowProps = {
   label: string;
   value: string | undefined;
   valueColor?: string;
-  valueFontSize?: string;
 };
 
-function Row({ label, value, valueColor = GREEN_400, valueFontSize = '36px' }: RowProps) {
+function Row({ label, value, valueColor = GREEN_400 }: RowProps) {
   return (
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
       <span style={{ fontFamily: '"Press Start 2P"', fontSize: '28px', color: GREEN_400, flexShrink: 0 }}>
@@ -38,7 +37,7 @@ function Row({ label, value, valueColor = GREEN_400, valueFontSize = '36px' }: R
       </span>
       <span style={{
         fontFamily: '"Press Start 2P", "Noto Sans JP", monospace',
-        fontSize: valueFontSize,
+        fontSize: '36px',
         color: valueColor,
         textAlign: 'right',
       }}>
@@ -46,13 +45,6 @@ function Row({ label, value, valueColor = GREEN_400, valueFontSize = '36px' }: R
       </span>
     </div>
   );
-}
-
-function getStageFontSize(text: string): string {
-  if (text.length > 20) return '20px';
-  if (text.length > 15) return '24px';
-  if (text.length > 10) return '30px';
-  return '36px';
 }
 
 export function AfTemplate({
@@ -191,12 +183,19 @@ export function AfTemplate({
                 justifyContent: 'center',
               }}>
                 {title && (
-                  <Row
-                    label="STAGE:"
-                    value={title}
-                    valueColor={GREEN_400}
-                    valueFontSize={getStageFontSize(title)}
-                  />
+                  <div style={{
+                    display: 'flex',
+                    fontFamily: '"Noto Sans JP"',
+                    fontSize: '36px',
+                    color: GREEN_400,
+                    fontWeight: 'bold',
+                    borderBottom: `2px dashed ${GREEN}`,
+                    paddingBottom: '12px',
+                    marginBottom: '8px',
+                    width: '100%',
+                  }}>
+                    {title}
+                  </div>
                 )}
                 {rank && (
                   <Row label="RANK:" value={rank.toUpperCase()} valueColor={rankColor} />
