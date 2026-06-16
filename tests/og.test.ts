@@ -1,8 +1,10 @@
 import { vi, expect, test, beforeEach, afterEach } from 'vitest';
 
 const mockFontBuffer = Buffer.from(new Uint8Array(8));
+export let lastRenderedElement: any = null;
 
 beforeEach(() => {
+  lastRenderedElement = null;
   vi.resetModules();
   vi.doMock('next/og', () => ({
     ImageResponse: class MockImageResponse extends Response {
@@ -10,6 +12,7 @@ beforeEach(() => {
         _element: unknown,
         options?: { width?: number; height?: number; headers?: Record<string, string> }
       ) {
+        lastRenderedElement = _element;
         super('fake-png-data', {
           status: 200,
           headers: {
@@ -23,11 +26,23 @@ beforeEach(() => {
   vi.doMock('node:fs/promises', () => ({
     readFile: vi.fn().mockResolvedValue(mockFontBuffer),
   }));
+  vi.doMock('@/app/api/og/comments', () => ({
+    fetchResultComments: vi.fn().mockResolvedValue({
+      P1: 'Perfect Mock Comment',
+      A1: 'A1 Mock Comment',
+    }),
+    resolveComment: (comment: string, map: any) => {
+      if (map[comment]) return map[comment];
+      if (/^[A-Z]\d+$/.test(comment)) return 'Default Mock Fallback';
+      return comment;
+    },
+  }));
 });
 
 afterEach(() => {
   vi.doUnmock('next/og');
   vi.doUnmock('node:fs/promises');
+  vi.doUnmock('@/app/api/og/comments');
 });
 
 test('returns 200 and image/png for valid params', async () => {
@@ -109,4 +124,35 @@ test('font cache resets after failure so next request can retry', async () => {
 
   const retryResponse = await GET(new Request('http://localhost:3000/api/og'));
   expect(retryResponse.status).toBe(200);
+});
+
+test('af theme resolves comment ID parameter correctly', async () => {
+  const { GET } = await import('@/app/api/og/route');
+
+  const url = 'http://localhost:3000/api/og?theme=af&comment=P1';
+  const response = await GET(new Request(url));
+
+  expect(response.status).toBe(200);
+  expect(lastRenderedElement).not.toBeNull();
+  expect(lastRenderedElement.props.comment).toBe('Perfect Mock Comment');
+});
+
+test('af theme falls back for unrecognized comment ID parameter', async () => {
+  const { GET } = await import('@/app/api/og/route');
+
+  const url = 'http://localhost:3000/api/og?theme=af&comment=Z9';
+  const response = await GET(new Request(url));
+
+  expect(response.status).toBe(200);
+  expect(lastRenderedElement.props.comment).toBe('Default Mock Fallback');
+});
+
+test('af theme leaves raw comment parameter intact', async () => {
+  const { GET } = await import('@/app/api/og/route');
+
+  const url = 'http://localhost:3000/api/og?theme=af&comment=CustomRawComment';
+  const response = await GET(new Request(url));
+
+  expect(response.status).toBe(200);
+  expect(lastRenderedElement.props.comment).toBe('CustomRawComment');
 });

@@ -6,6 +6,8 @@ import { MissionCardTemplate } from './templates/mission-card';
 import { AfTemplate } from './templates/af';
 import { parseAfParams, parseMissionCardParams } from './params';
 import type { OGTemplate } from './types';
+import { fetchResultComments, resolveComment } from './comments';
+
 
 const MAX_LENGTHS = { title: 100, description: 80, date: 20 };
 
@@ -44,6 +46,11 @@ export async function GET(request: Request) {
       : theme === 'mission-card'
       ? parseMissionCardParams(searchParams)
       : {};
+
+    if (theme === 'af' && 'comment' in themeParams && themeParams.comment) {
+      const commentsMap = await fetchResultComments();
+      themeParams.comment = resolveComment(themeParams.comment, commentsMap);
+    }
 
     const Template = TEMPLATES[theme] ?? TEMPLATES.default;
 
