@@ -138,29 +138,61 @@ export function AfTemplate({
                 flexDirection: 'column',
                 flexGrow: 1,
                 border: `2px solid ${GREEN}`,
-                padding: '32px',
-                gap: '24px',
+                padding: '24px 32px',
+                gap: '20px',
                 justifyContent: 'center',
-                alignItems: 'center',
               }}>
+                {(title || rank) && (
+                  <div style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '16px',
+                    width: '100%',
+                    borderBottom: `2px dashed ${GREEN}`,
+                    paddingBottom: '20px',
+                  }}>
+                    {title && (
+                      <div style={{
+                        display: 'flex',
+                        fontFamily: '"Noto Sans JP"',
+                        fontSize: '36px',
+                        color: GREEN_400,
+                        fontWeight: 'bold',
+                      }}>
+                        {title}
+                      </div>
+                    )}
+                    {rank && (
+                      <Row label="RANK:" value={rank.toUpperCase()} valueColor={rankColor} />
+                    )}
+                  </div>
+                )}
                 <div style={{
                   display: 'flex',
-                  fontFamily: '"Press Start 2P"',
-                  fontSize: '60px',
-                  color: YELLOW,
-                  letterSpacing: '2px',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '16px',
+                  width: '100%',
                 }}>
-                  TRAINING
-                </div>
-                <div style={{
-                  display: 'flex',
-                  fontFamily: '"Noto Sans JP"',
-                  fontSize: '38px',
-                  color: '#ffffff',
-                  fontWeight: 'bold',
-                  textAlign: 'center',
-                }}>
-                  ただいまAZIKタイピング特訓中！
+                  <div style={{
+                    display: 'flex',
+                    fontFamily: '"Press Start 2P"',
+                    fontSize: '60px',
+                    color: YELLOW,
+                    letterSpacing: '2px',
+                  }}>
+                    TRAINING
+                  </div>
+                  <div style={{
+                    display: 'flex',
+                    fontFamily: '"Noto Sans JP"',
+                    fontSize: '38px',
+                    color: '#ffffff',
+                    fontWeight: 'bold',
+                    textAlign: 'center',
+                  }}>
+                    ただいまAZIKタイピング特訓中！
+                  </div>
                 </div>
               </div>
             </div>
